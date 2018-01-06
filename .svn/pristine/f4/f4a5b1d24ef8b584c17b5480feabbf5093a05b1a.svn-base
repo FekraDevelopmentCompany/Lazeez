@@ -1,0 +1,48 @@
+﻿using Pranzo.Model.Infrastructure;
+using Pranzo.Resource.Shared;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+
+namespace Pranzo.Model.DBModel
+{
+    public class Restaurant : BaseEntity
+    {
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(100, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        [Remote("IsUnique", "Restaurant", AdditionalFields = "ID", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_AlreadyExists")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Mobile { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Phone { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string HotLine { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int Type { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        public int NumberOfTables { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        public int NumberOfStaff { get; set; }
+
+        public bool CanReserveTables { get; set; }
+        public bool AllowSmoking { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string TimeToDelivery { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [RegularExpression(@"((?=.*[0-9])\d{0,16}(\.\d{1,2})?)", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        public decimal Tax { get; set; }
+    }
+}

@@ -1,0 +1,44 @@
+﻿using Microsoft.Owin;
+using Microsoft.Owin.Security.OAuth;
+using Owin;
+using Pranzo.WebApi.Providers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+
+[assembly: OwinStartup(typeof(Pranzo.WebApi.Startup))]
+namespace Pranzo.WebApi
+{
+  
+    public class Startup
+    {
+        public static OAuthAuthorizationServerOptions OAuthServerOptions;
+        public void Configuration(IAppBuilder app)
+        {
+            app.Use<InvalidAuthenticationMiddleware>();
+            ConfigureOAuth(app);
+            HttpConfiguration config = new HttpConfiguration();
+            WebApiConfig.Register(config);
+            app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
+            app.UseWebApi(config);
+        }
+
+        public void ConfigureOAuth(IAppBuilder app)
+        {
+            OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                Provider = new AuthorizationServerProvider()
+            };
+
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+
+        }
+    }
+}

@@ -1,0 +1,46 @@
+﻿using Pranzo.Model.Infrastructure;
+using Pranzo.Resource.Shared;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+
+namespace Pranzo.Model.DBModel
+{
+    public class RestaurantMeal : BaseEntity
+    {
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int RestaurantID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int RestaurantMenuID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [Remote("IsUnique", "RestaurantMeal", AdditionalFields = "ID , RestaurantID", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_AlreadyExists")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Contents { get; set; }
+
+        [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        public int? Calories { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [RegularExpression(@"((?=.*[0-9])\d{0,16}(\.\d{1,2})?)", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        [Range(1, 10000, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MinimumLength")]
+        public decimal Cost { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [RegularExpression("^[0-9]*$", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_InvalidFormat")]
+        [Range(1, 200, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MinimumLength")]
+        public int NumberOfPersons { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Temperature { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string TimeOfMeal { get; set; }
+    }
+}

@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace Pranzo.Model.Infrastructure
+{
+    public interface IBaseEntity
+    {
+        int CreatorUserID { get; set; }
+        int ModifiedUserID { get; set; }
+        DateTime CreationDate { get; set; }
+        DateTime ModificationDate { get; set; }
+        bool IsDeleted { get; set; }
+    }
+}

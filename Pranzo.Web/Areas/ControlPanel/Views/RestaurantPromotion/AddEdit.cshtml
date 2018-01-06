@@ -1,0 +1,98 @@
+﻿@model Lazeez.Model.ViewModel.RestaurantPromotionModel
+@using Lazeez.Resource.ControlPanel
+
+@using (Ajax.BeginForm("Save", "RestaurantPromotion", new { area = "ControlPanel" },
+new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantPromotionVM.ID)
+    @Html.HiddenFor(model => model.RestaurantPromotionVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantPromotionVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantPromotion.RestaurantPromotions</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.RestaurantName</label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.Name<span class="required"> *</span></label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantPromotionVM.Name, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantPromotion.Name } })
+                        @Html.ValidationMessageFor(model => model.RestaurantPromotionVM.Name)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.Percentage<span class="required"> *</span></label>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantPromotionVM.Percentage, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantPromotion.Percentage } })
+                        @Html.ValidationMessageFor(model => model.RestaurantPromotionVM.Percentage)
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.ForAllUsers</label>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.CheckBoxFor(model => model.RestaurantPromotionVM.ForAllUsers)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.StartDate<span class="required"> *</span></label>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantPromotionVM.StartDate, new { htmlAttributes = new { @class = "form-control", datepicker = "date", @palceholder = @RestaurantPromotion.StartDate } })
+                        @Html.ValidationMessageFor(model => model.RestaurantPromotionVM.StartDate)
+                    </div>
+                    <div class="col-md-2">
+                        <label class="control-label">@RestaurantPromotion.EndDate<span class="required"> *</span></label>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantPromotionVM.EndDate, new { htmlAttributes = new { @class = "form-control", datepicker = "date", @palceholder = @RestaurantPromotion.EndDate } })
+                        @Html.ValidationMessageFor(model => model.RestaurantPromotionVM.EndDate)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <hr />
+        <div class="col-lg-12">
+            <br /><br />
+            @Html.ListBoxFor(model => model.SelectedPromotionMeals, Model.ListPromotionMeals, new { @id = "lstPromotionMeal", @class = "form-control", multiple = "multiple" })
+
+            <div>
+                @Html.Partial("Buttons/_Save")
+                @Html.Partial("Buttons/_CancelAddEdit")
+            </div>
+        </div>
+
+    </div>
+}
+
+@section Scripts{
+    <script>
+        var $dualListbox = $("#lstPromotionMeal");
+        $(document).ready(function () {
+
+            $dualListbox.bootstrapDualListbox({
+                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false
+            });
+        });
+
+    </script>
+}

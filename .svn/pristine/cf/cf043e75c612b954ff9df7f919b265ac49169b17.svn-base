@@ -1,0 +1,112 @@
+﻿using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Helpers;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using System.Web.Mvc;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantTableController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/RestaurantTable
+        public ActionResult Index(int restaurantId)
+        {
+            // Get Restaurant Name 
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantTableSearchParams prms)
+        {
+            // Search in Restaurant Tables
+            var restaurantTableService = unitOfWork.Service<RestaurantTableService>();
+            var restaurantTables = restaurantTableService.Search(prms);
+            return Json(restaurantTables, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantTableService = unitOfWork.Service<RestaurantTableService>();
+            restaurantTableService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var listService = unitOfWork.Service<ListService>();
+
+            var lstDistrict = listService.Fill_District();
+
+            var model = new RestaurantTableModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantTableVM = new RestaurantTable { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantTableService = unitOfWork.Service<RestaurantTableService>();
+                model.RestaurantTableVM = restaurantTableService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantTableModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantTableService = unitOfWork.Service<RestaurantTableService>();
+
+                if (model.RestaurantTableVM.ID > 0)    // Edit
+                {
+                    restaurantTableService.Update(model.RestaurantTableVM);
+                }
+                else // Add
+                {
+                    restaurantTableService.Insert(model.RestaurantTableVM);
+                }
+
+                unitOfWork.Save();
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantTableVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        #endregion
+    }
+}

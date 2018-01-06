@@ -1,0 +1,28 @@
+﻿using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+
+namespace Pranzo.Service.Service
+{
+    public class DeviceTokenService : BaseService<tbl_UserDeviceToken, UserDeviceToken>
+    {
+        public DeviceTokenService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_UserDeviceToken>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+
+       
+        #endregion
+    }
+}

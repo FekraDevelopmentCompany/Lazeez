@@ -1,0 +1,16 @@
+﻿@model Pranzo.Helper.MessageDialog
+<div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">@Model.Title</h4>
+        </div>
+        <div class="modal-body">
+            @Model.Message
+        </div>
+        <div class="modal-footer">
+            <button data-dismiss="modal" id="btn_Ok" class="btn @Model.Type">@Pranzo.Resource.Shared.Buttons.Btn_Ok</button>
+        </div>
+    </div>
+</div>

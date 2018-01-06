@@ -1,0 +1,52 @@
+﻿@model RestaurantMenuModel
+@using Pranzo.Helper
+@using Pranzo.Model.ViewModel
+@using Pranzo.Resource.ControlPanel
+
+@using (Ajax.BeginForm("Save", "RestaurantMenu", new { area = "ControlPanel" },
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = "checkFileUpload", OnFailure = "OnFailure" },
+        new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantMenuVM.ID)
+    @Html.HiddenFor(model => model.RestaurantMenuVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantMenuVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantMenu.RestaurantMenus</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMenu.RestaurantName</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMenu.Name<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantMenuVM.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMenu.Name } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMenuVM.Name)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMenu.Description</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantMenuVM.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMenu.Description } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.Partial("~/Areas/ControlPanel/Views/Upload/_Index.cshtml", new SourceImageModel { SourceID = @Model.RestaurantMenuVM.ID, SourceType = Enums.SourceType.RestaurantMenu })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Save")
+                @Html.Partial("Buttons/_CancelAddEdit")
+            </div>
+        </div>
+    </div>
+}

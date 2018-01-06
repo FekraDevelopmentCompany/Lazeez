@@ -1,0 +1,423 @@
+﻿using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Model.DBModel;
+using Pranzo.Service.Helpers;
+using Pranzo.Web.Helpers;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class MasterDataController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Time
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(MasterDataSearchParams prms)
+        {
+
+            JQueryDataTables<MasterDataSearch> MasterData = new JQueryDataTables<MasterDataSearch>();
+
+            switch ((Enums.LookupData)prms.MasterDataId)
+            {
+                case Enums.LookupData.Country:
+                    // Hide Header Of Description Column
+                    ViewBag.DisplayDescriptionHeader = false;
+                    // Set Description Header title with Empty String
+                    ViewBag.DescriptionHeader = string.Empty;
+                    // Load Grid From Country Service
+                    var countryService = unitOfWork.Service<CountryService>();
+                    MasterData = countryService.Search(prms);
+                    break;
+
+                case Enums.LookupData.City:
+                    // Display Header For Description Column 
+                    ViewBag.DisplayDescriptionHeader = true;
+                    // Get Description Header Title From Local Resources
+                    ViewBag.DescriptionHeader = Resource.ControlPanel.MasterData.CountryName;
+                    // Load Grid From City service
+                    var cityService = unitOfWork.Service<CityService>();
+                    MasterData = cityService.Search(prms);
+                    break;
+
+                case Enums.LookupData.District:
+                    // Display Header For Description Column 
+                    ViewBag.DisplayDescriptionHeader = true;
+                    // Get Description Header Title From Local Resources
+                    ViewBag.DescriptionHeader = Resource.ControlPanel.MasterData.CityName;
+                    // Load Grid From District service
+                    var districtService = unitOfWork.Service<DistrictService>();
+                    MasterData = districtService.Search(prms);
+                    break;
+
+                case Enums.LookupData.MealException:
+                    // Display Header For Description Column 
+                    ViewBag.DisplayDescriptionHeader = true;
+                    // Get Description Header Title From Local Resources
+                    ViewBag.DescriptionHeader = Resource.ControlPanel.MasterData.Description;
+                    // Load Grid From MealException service
+                    var MealExceptionService = unitOfWork.Service<MealExceptionService>();
+                    MasterData = MealExceptionService.Search(prms);
+                    break;
+
+                case Enums.LookupData.FoodType:
+                    // Hide Header Of Description Column
+                    ViewBag.DisplayDescriptionHeader = false;
+                    // Set Description Header title with Empty String
+                    ViewBag.DescriptionHeader = string.Empty;
+                    // Load Grid From FoodType Service
+                    var foodTypeService = unitOfWork.Service<FoodTypeService>();
+                    MasterData = foodTypeService.Search(prms);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return Json(MasterData, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id, string masterDataId)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                MasterDataId = masterDataId,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            int masterDataId = int.Parse(confirmDialog.MasterDataId);
+            switch ((Enums.LookupData)masterDataId)
+            {
+                case Enums.LookupData.Country:
+                    // Delete  Country
+                    var countryService = unitOfWork.Service<CountryService>();
+                    countryService.Delete(int.Parse(confirmDialog.Id));
+                    break;
+
+                case Enums.LookupData.City:
+                    // Delete  city
+                    var cityService = unitOfWork.Service<CityService>();
+                    cityService.Delete(int.Parse(confirmDialog.Id));
+                    break;
+
+                case Enums.LookupData.District:
+                    // Delete  District
+                    var districtService = unitOfWork.Service<DistrictService>();
+                    districtService.Delete(int.Parse(confirmDialog.Id));
+                    break;
+
+                case Enums.LookupData.MealException:
+                    // Delete Meal Exception
+                    var mealExceptionService = unitOfWork.Service<MealExceptionService>();
+                    mealExceptionService.Delete(int.Parse(confirmDialog.Id));
+                    break;
+
+                case Enums.LookupData.FoodType:
+                    var foodTypeService = unitOfWork.Service<FoodTypeService>();
+                    foodTypeService.Delete(int.Parse(confirmDialog.Id));
+                    break;
+
+                default:
+                    break;
+            }
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int masterDataId)
+        {
+            var listService = unitOfWork.Service<ListService>();
+            var model = new MasterDataModel();
+
+            switch ((Enums.LookupData)masterDataId)
+            {
+                //********** F  O  O  D     T  Y  P  E *************
+                case Enums.LookupData.FoodType:
+
+                    model = new MasterDataModel
+                    {
+                        TableName = Enums.LookupData.FoodType.ToString(),
+                        // ListParent = ListSettings.Load(null, string.Empty),
+                        DisplayParent = false,
+                        parentTitle = string.Empty,
+                        DisplayDescription = false,
+                        MasterDataId = (int)Enums.LookupData.FoodType
+
+                    };
+
+                    if (id == -1) // Add
+                    {
+                        model.MasterDataVm = new MasterData { };
+                    }
+                    else // Edit
+                    {
+                        var foodService = unitOfWork.Service<FoodTypeService>();
+
+                        var foodData = foodService.GetById(id);
+                        model.MasterDataVm = new MasterData
+                        {
+                            ID = foodData.ID,
+                            Name = foodData.Name
+                        };
+                    }
+
+                    break;
+
+                //********** M  E  A  L    E  X  C  E  P  T  I  O  N *************
+                case Enums.LookupData.MealException:
+
+                    model = new MasterDataModel
+                    {
+                        TableName = Enums.LookupData.MealException.ToString(),
+                        // ListParent = ListSettings.Load(null, string.Empty),
+                        DisplayParent = false,
+                        parentTitle = string.Empty,
+                        DisplayDescription = true,
+                        MasterDataId = (int)Enums.LookupData.MealException
+
+                    };
+
+                    if (id == -1) // Add
+                    {
+                        model.MasterDataVm = new MasterData { };
+                    }
+                    else // Edit
+                    {
+                        var mealExceptionService = unitOfWork.Service<MealExceptionService>();
+
+                        var mealExceptionData = mealExceptionService.GetById(id);
+                        model.MasterDataVm = new MasterData
+                        {
+                            ID = mealExceptionData.ID,
+                            Name = mealExceptionData.Name,
+                            Description = mealExceptionData.Description
+                        };
+                    }
+
+                    break;
+
+                //********** C  O  U  N  T  R  Y *************
+                case Enums.LookupData.Country:
+
+                    model = new MasterDataModel
+                    {
+                        TableName = Enums.LookupData.Country.ToString(),
+                        // ListParent = ListSettings.Load(null, string.Empty),
+                        DisplayParent = false,
+                        parentTitle = string.Empty,
+                        DisplayDescription = false,
+                        MasterDataId = (int)Enums.LookupData.Country
+
+                    };
+
+                    if (id == -1) // Add
+                    {
+                        model.MasterDataVm = new MasterData { };
+                    }
+                    else // Edit
+                    {
+                        var countryService = unitOfWork.Service<CountryService>();
+
+                        var CountryData = countryService.GetById(id);
+                        model.MasterDataVm = new MasterData
+                        {
+                            ID = CountryData.ID,
+                            Name = CountryData.Name
+                        };
+                    }
+
+                    break;
+
+
+                //********** C  I  T  Y *************
+                case Enums.LookupData.City:
+                    // Country Model
+                    var lstCountry = listService.Fill_Country();
+                    model = new MasterDataModel
+                    {
+                        TableName = Enums.LookupData.City.ToString(),
+                        ListParent = ListSettings.Load(lstCountry),
+                        DisplayParent = true,
+                        parentTitle = Resource.ControlPanel.MasterData.CountryName,
+                        DisplayDescription = false,
+                        MasterDataId = (int)Enums.LookupData.Country
+
+                    };
+
+                    if (id == -1) // Add
+                    {
+                        model.MasterDataVm = new MasterData { };
+                    }
+                    else // Edit
+                    {
+                        var cityService = unitOfWork.Service<CityService>();
+
+                        var cityData = cityService.GetById(id);
+                        model.MasterDataVm = new MasterData
+                        {
+                            ID = cityData.ID,
+                            Name = cityData.Name,
+                            parentId = cityData.CountryID.ToString(),
+                            Description = string.Empty
+                        };
+                    }
+
+                    break;
+
+                //********** D  I  S  T  R  I  C  T *************
+                case Enums.LookupData.District:
+                    // Country Model
+                    var lstCity = listService.Fill_City();
+                    model = new MasterDataModel
+                    {
+                        TableName = Enums.LookupData.District.ToString(),
+                        ListParent = ListSettings.Load(lstCity),
+                        DisplayParent = true,
+                        parentTitle = Resource.ControlPanel.MasterData.CityName,
+                        DisplayDescription = false,
+                        MasterDataId = (int)Enums.LookupData.District
+
+                    };
+
+                    if (id == -1) // Add
+                    {
+                        model.MasterDataVm = new MasterData { };
+                    }
+                    else // Edit
+                    {
+                        var districtService = unitOfWork.Service<DistrictService>();
+
+                        var districtData = districtService.GetById(id);
+                        model.MasterDataVm = new MasterData
+                        {
+                            ID = districtData.ID,
+                            Name = districtData.Name,
+                            parentId = districtData.CityID.ToString(),
+                            Description = string.Empty
+                        };
+                    }
+
+                    break;
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(MasterDataModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                switch ((Enums.LookupData)model.MasterDataId)
+                {
+                    //********** F  O  O  D     T  Y  P  E *************
+                    case Enums.LookupData.FoodType:
+
+                        var foodTypeService = unitOfWork.Service<FoodTypeService>();
+                        FoodType foodTypeModel = new FoodType() { ID = model.MasterDataVm.ID, Name = model.MasterDataVm.Name };
+                        if (model.MasterDataVm.ID > 0)    // Edit
+                        {
+                            foodTypeService.Update(foodTypeModel);
+                        }
+                        else // Add
+                        {
+                            foodTypeService.Insert(foodTypeModel);
+                        }
+                        break;
+
+                    //********** M  E  A  L  E  X  C  E  P  T  I  O  N *************
+                    case Enums.LookupData.MealException:
+
+                        var mealExceptionService = unitOfWork.Service<MealExceptionService>();
+                        MealException mealExceptionModel = new MealException() { ID = model.MasterDataVm.ID, Name = model.MasterDataVm.Name, Description = model.MasterDataVm.Description };
+                        if (model.MasterDataVm.ID > 0)    // Edit
+                        {
+                            mealExceptionService.Update(mealExceptionModel);
+                        }
+                        else // Add
+                        {
+                            mealExceptionService.Insert(mealExceptionModel);
+                        }
+                        break;
+
+                    //********** C  O  U  N  T  R  Y *************
+                    case Enums.LookupData.Country:
+
+                        var countryService = unitOfWork.Service<CountryService>();
+                        Country countryModel = new Country() { ID = model.MasterDataVm.ID, Name = model.MasterDataVm.Name };
+                        if (model.MasterDataVm.ID > 0)    // Edit
+                        {
+                            countryService.Update(countryModel);
+                        }
+                        else // Add
+                        {
+                            countryService.Insert(countryModel);
+                        }
+                        break;
+
+                    //********** C  I  T  Y *************
+                    case Enums.LookupData.City:
+
+                        var cityService = unitOfWork.Service<CityService>();
+                        City cityModel = new City() { ID = model.MasterDataVm.ID, Name = model.MasterDataVm.Name, CountryID = int.Parse(model.MasterDataVm.parentId) };
+                        if (model.MasterDataVm.ID > 0)    // Edit
+                        {
+                            cityService.Update(cityModel);
+                        }
+                        else // Add
+                        {
+                            cityService.Insert(cityModel);
+                        }
+                        break;
+
+                    //********** D  I  S  T  R  I  C  T *************
+                    case Enums.LookupData.District:
+
+                        var districtService = unitOfWork.Service<DistrictService>();
+                        District districtModel = new District() { ID = model.MasterDataVm.ID, Name = model.MasterDataVm.Name, CityID = int.Parse(model.MasterDataVm.parentId) };
+                        if (model.MasterDataVm.ID > 0)    // Edit
+                        {
+                            districtService.Update(districtModel);
+                        }
+                        else // Add
+                        {
+                            districtService.Insert(districtModel);
+                        }
+                        break;
+                }
+
+
+                unitOfWork.Save();
+
+                //, new { masterDataId = model.MasterDataId }
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index"), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+
+
+        #endregion
+    }
+}

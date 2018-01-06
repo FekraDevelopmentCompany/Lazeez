@@ -1,0 +1,142 @@
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Helpers;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Web.Helpers;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantOrderController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Order
+        public ActionResult Index()
+        {
+            var listService = unitOfWork.Service<ListService>();
+            var lstRestaurants = listService.Fill_Restaurant();
+            ViewBag.ListRestaurants = ListSettings.Load(lstRestaurants, Resources.Res_All);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantOrderSearchParams prms)
+        {
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            var restaurantOrders = restaurantOrderService.Search(prms);
+            return Json(restaurantOrders, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetOrderStatus()
+        {
+            var orderStatus = Enum.GetValues(typeof(Enums.RestaurantOrderStatus));
+            var lstOrderStatus = (from object keyValue in orderStatus select new KeyValuePair { Value = ((int)keyValue).ToString(), Text = keyValue.ToString() }).ToList();
+            return Json(lstOrderStatus, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            restaurantOrderService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        [HttpGet]
+        public PartialViewResult UpdateStatus(string id)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult UpdateStatus(ConfirmDialog confirmDialog)
+        {
+            var lstValues = confirmDialog.Id.Split(':');
+            var id = int.Parse(lstValues[0]);
+            var status = int.Parse(lstValues[1]);
+
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            restaurantOrderService.UpdateStatus(id, status);
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        //public ActionResult AddEdit(int id, int restaurantId)
+        //{
+        //    var restaurantService = unitOfWork.Service<RestaurantService>();
+
+        //    var model = new RestaurantOrderModel
+        //    {
+        //        RestaurantName = restaurantService.GetName(restaurantId)
+        //    };
+
+        //    if (id == -1) // Add
+        //    {
+        //        model.RestaurantOrderVM = new RestaurantOrder { RestaurantID = restaurantId };
+        //    }
+        //    else // Edit
+        //    {
+        //        var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+        //        model.RestaurantOrderVM = restaurantOrderService.GetById(id);
+        //    }
+
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //public ActionResult Save(RestaurantOrderModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+
+        //        if (model.RestaurantOrderVM.ID > 0) // Edit
+        //        {
+        //            restaurantOrderService.Update(model.RestaurantOrderVM);
+        //            unitOfWork.Save();
+        //        }
+        //        else // Add
+        //        {
+        //            model.RestaurantOrderVM.ID = restaurantOrderService.Insert(model.RestaurantOrderVM, true);
+        //        }
+
+        //        return Json(new JsonResponse { ID = model.RestaurantOrderVM.ID, Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantOrderVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+        //    }
+
+        //    return RedirectToAction("AddEdit", model);
+        //}
+
+        #endregion
+    }
+}

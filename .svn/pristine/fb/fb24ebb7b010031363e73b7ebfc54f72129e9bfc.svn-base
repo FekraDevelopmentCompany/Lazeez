@@ -1,0 +1,63 @@
+﻿using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantMenuService : BaseService<tbl_RestaurantMenu, RestaurantMenu>
+    {
+        public RestaurantMenuService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantMenu>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Source Image
+            //var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            //restaurantBranchService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Menu
+            base.Delete(id);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantMenuSearch> Search(RestaurantMenuSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+
+            var restaurantMenus = (from rm in repository.Table
+                                   where rm.IsDeleted == false
+                                      && rm.RestaurantID == prms.RestaurantID
+                                      && (ignoreName || rm.Name.Contains(prms.Name))
+                                   select new RestaurantMenuSearch
+                                   {
+                                       ID = rm.ID,
+                                       Name = rm.Name,
+                                       Description = rm.Description
+                                   })
+                                    .OrderBy(prms.OrderBy)
+                                    .ToList();
+
+            return new JQueryDataTables<RestaurantMenuSearch>
+            {
+                iTotalRecords = restaurantMenus.Count,
+                iTotalDisplayRecords = restaurantMenus.Count,
+                aaData = restaurantMenus.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

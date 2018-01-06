@@ -1,0 +1,131 @@
+﻿using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Helpers;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Web.Helpers;
+using System.Web.Mvc;
+using Pranzo.Web.Helpers.Filters;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantBranchController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/RestaurantBranch
+        [AuthorizeUser]
+        public ActionResult Index(int restaurantId)
+        {
+            // Get Restaurant Name 
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+
+            // Get District Names That Realted to This Resturant to view in Search criteria
+            var listService = unitOfWork.Service<ListService>();
+            var lstDistrict = listService.Fill_District();
+            ViewBag.ListDistrictNames = ListSettings.Load(lstDistrict, Resources.Res_All);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantBranchSearchParams prms)
+        {
+            // Search in Restaurant Branchs
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            var restaurantBranches = restaurantBranchService.Search(prms);
+            return Json(restaurantBranches, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            restaurantBranchService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var listService = unitOfWork.Service<ListService>();
+
+            var lstDistrict = listService.Fill_District();
+
+            var model = new RestaurantBranchModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId),
+                ListDistrict = ListSettings.Load(lstDistrict, string.Empty)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantBranchVM = new RestaurantBranch { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+                model.RestaurantBranchVM = restaurantBranchService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantBranchModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+
+                if (model.RestaurantBranchVM.ID > 0)    // Edit
+                {
+                    restaurantBranchService.Update(model.RestaurantBranchVM);
+                }
+                else // Add
+                {
+                    restaurantBranchService.Insert(model.RestaurantBranchVM);
+                }
+
+                unitOfWork.Save();
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantBranchVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantBranchModel model)
+        {
+            // Check if Branch Name  exist or not 
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            var exists = restaurantBranchService.Exists(rm => rm.ID != model.RestaurantBranchVM.ID
+                                                   && rm.RestaurantID == model.RestaurantBranchVM.RestaurantID
+                                                   && rm.Name == model.RestaurantBranchVM.Name);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

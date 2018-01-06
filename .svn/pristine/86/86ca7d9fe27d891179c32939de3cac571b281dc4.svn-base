@@ -1,0 +1,76 @@
+﻿@model Pranzo.Model.ViewModel.MasterDataModel
+@using Pranzo.Resource.ControlPanel
+@using Pranzo.Resource.Shared
+
+@using (Ajax.BeginForm("Save", "MasterData", new { area = "ControlPanel" },
+                                                        new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+                                                        new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.MasterDataVm.ID)
+    @Html.HiddenFor(model => model.MasterDataId)
+    @Html.HiddenFor(model => model.MasterDataVm.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@MasterData.MastersData</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@MasterData.TableName</label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.TableName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label class="control-label">@MasterData.Name</label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.MasterDataVm.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                @if (Model.DisplayParent)
+                {
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">@Model.parentTitle<span class="required"> *</span></label>
+                        @*<div class="col-md-2">
+                            @Html.LabelFor(model => model.parentTitle, new { @class = "control-label" })
+                        </div>*@
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.MasterDataVm.parentId, Model.ListParent, new { @id = "ddl_Parent", @class = "form-control" })
+                        </div>
+                    </div>
+                }
+
+                @if (Model.DisplayDescription)
+                {
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label class="control-label">@MasterData.Description</label>
+                        </div>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.MasterDataVm.Description, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Save")
+                @Html.Partial("Buttons/_CancelAddEdit")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+
+    <script>
+
+    </script>
+}

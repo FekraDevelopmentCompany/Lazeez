@@ -1,0 +1,6 @@
+﻿@using Pranzo.Resource.Shared
+
+<div align="center" style="padding-top: 100px">
+    <img src="~/Content/Images/common-icons/deny.png" alt="" />
+    <h2><i class="fa fa-warning"></i> @Messages.Msg_NotAuthorized</h2>
+</div>

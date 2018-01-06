@@ -1,0 +1,25 @@
+﻿var $dualListbox = $("#lstMealException");
+
+$(document).ready(function () {
+    $dualListbox.bootstrapDualListbox({
+        preserveSelectionOnMove: 'moved',
+        moveOnSelect: false
+    });
+});
+
+function refreshDualListbox(item) {
+    $dualListbox.append("<option value=" + item.Value + ">" + item.Text + "</option>");
+    $dualListbox.bootstrapDualListbox("refresh");
+}
+
+// add meal exception button
+$(document).on("click", "#btn_AddException", function () {
+    $.ajax({
+        url: links.addMealException,
+        type: "GET",
+        success: function (data) {
+            openPopupDialog(data);
+            $.validator.unobtrusive.parse($("#frm_Modal"));
+        }
+    });
+});

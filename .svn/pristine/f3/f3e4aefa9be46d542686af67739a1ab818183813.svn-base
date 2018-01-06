@@ -1,0 +1,115 @@
+﻿using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Model.DBModel;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantMenuController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Menu
+        public ActionResult Index(int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+            
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantMenuSearchParams prms)
+        {
+            var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+            var restaurantMenus = restaurantMenuService.Search(prms);
+            return Json(restaurantMenus, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+            restaurantMenuService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+
+            var model = new RestaurantMenuModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantMenuVM = new RestaurantMenu { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+                model.RestaurantMenuVM = restaurantMenuService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantMenuModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+
+                if (model.RestaurantMenuVM.ID > 0)    // Edit
+                {
+                    restaurantMenuService.Update(model.RestaurantMenuVM);
+                }
+                else // Add
+                {
+                    restaurantMenuService.Insert(model.RestaurantMenuVM);
+                }
+
+                unitOfWork.Save();
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantMenuVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantMenuModel model)
+        {
+            var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+            var exists = restaurantMenuService.Exists(rm => rm.ID != model.RestaurantMenuVM.ID
+                                                   && rm.RestaurantID == model.RestaurantMenuVM.RestaurantID
+                                                   && rm.Name == model.RestaurantMenuVM.Name);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,25 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Model.DBModel;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+
+namespace Pranzo.Service.Service
+{
+    public class MealExceptionService : BaseService<lkp_MealException, MealException>
+    {
+        public MealExceptionService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<lkp_MealException>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+        
+        #endregion
+    }
+}

@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PRANZO | Login</title>
+    <!-- Bootstrap -->
+    <link href="~/Content/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="~/Content/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom Theme Style -->
+    <link href="~/Content/custom/custom.css" rel="stylesheet" />
+</head>
+<body class="login">
+    <div class="login-box">
+        <img class="login-logo" src="~/Content/images/logo-icons/logo.png" alt="" />
+        <br>
+        <img class="" src="~/Content/images/logo-icons/pranzo.png" alt="" />
+        <h2>Taste something different</h2>
+        <div class="login_wrapper">
+            <div class="form login_form">
+                <section class="login_content">
+                    <form>
+                        <div>
+                            <input type="text" class="form-control" placeholder="Username" required="" />
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" placeholder="Password" required="" />
+                        </div>
+                        <div>
+                            <a class="btn btn-default submit login-btn" href="@Url.Action("Index", "Home")">Sign in</a>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+
+namespace Pranzo.Service.Helpers
+{
+    public class ListService
+    {
+        readonly UnitOfWork _unitOfWork;
+
+        public ListService(UnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+        #region Restaurant
+
+        /// <summary>
+        ///  Fill Food DropDownlist
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair> Fill_FoodType()
+        {
+            var repository = _unitOfWork.Repository<lkp_FoodType>();
+
+            return repository.Table
+                .Where(f => f.IsDeleted == false)
+                .Select(f => new KeyValuePair
+                {
+                    Value = f.ID.ToString(),
+                    Text = f.Name
+                }).ToList();
+        }
+
+        /// <summary>
+        /// Fill District Drop DownList
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair> Fill_District()
+        {
+            var repository = _unitOfWork.Repository<lkp_District>();
+
+            return repository.Table
+                .Where(f => f.IsDeleted == false)
+                .Select(f => new KeyValuePair
+                {
+                    Value = f.ID.ToString(),
+                    Text = f.Name
+                }).ToList();
+        }
+
+        /// <summary>
+        /// Fill Meal Exception Drop DownList
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair> Fill_MealException()
+        {
+            var repository = _unitOfWork.Repository<lkp_MealException>();
+
+            return repository.Table
+                .Where(f => f.IsDeleted == false)
+                .Select(f => new KeyValuePair
+                {
+                    Value = f.ID.ToString(),
+                    Text = f.Name
+                }).ToList();
+        }
+
+
+
+
+        #endregion
+    }
+}

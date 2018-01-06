@@ -1,0 +1,13 @@
+﻿using System.Web.Mvc;
+using Pranzo.Web.Controllers;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class LoginController : BaseController
+    {
+        public ActionResult Index()
+        {
+            return View();
+        }
+    }
+}

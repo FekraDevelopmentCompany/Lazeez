@@ -1,0 +1,78 @@
+﻿@using Lazeez.Helper
+@using Lazeez.Resource.ControlPanel
+@using Lazeez.Resource.Shared
+@using Lazeez.Web.Helpers
+
+@{
+    ViewBag.Title = @RestaurantOrder.RestaurantOrders;
+}
+
+<form class="form-horizontal">
+    <h2>@Resources.Res_Search</h2>
+    <h4>@RestaurantOrder.RestaurantOrders</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantOrder.BranchName</label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("ListRestaurantBranches", null, new { @id = "ddl_RestaurantBranches", @class = "form-control" })
+                    </div>
+                    <label class="col-md-2 control-label">@RestaurantOrder.Status</label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("ListOrderStatus", null, new { @id = "ddl_Status", @class = "form-control" })
+                        @*@Html.EnumsDropDownList("ddl_Status", new Enums.RestaurantOrderStatus(), (int) Enums.RestaurantOrderStatus.Draft, new {@id = "ddl_Status", @class = "form-control"}, Resources.Res_All)*@
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Search")
+                @Html.Partial("Buttons/_Cancel")
+                @Html.Partial("Buttons/_Add")
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-lg-12">
+        <table id="grid" class="table table-striped table-hover table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>@RestaurantOrder.ID</th>
+                    <th>@RestaurantOrder.BranchName</th>
+                    <th>@RestaurantOrder.TotalCost</th>
+                    <th>@RestaurantOrder.DeliveryCost</th>
+                    <th>@RestaurantOrder.Tax</th>
+                    <th>@RestaurantOrder.OrderTime</th>
+                    <th>@RestaurantOrder.DeliveryTime</th>
+                    <th>@RestaurantOrder.PaymentType</th>
+                    <th>@RestaurantOrder.Status</th>
+                    <th width="16px"></th>
+                    <th width="16px"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/Areas/ControlPanel/Scripts/RestaurantOrder/Index.js"></script>
+    <script>
+        var links = {
+            search: '@Url.Action("Search", "RestaurantOrder")',
+            addEdit: '@Url.Action("AddEdit", "RestaurantOrder")',
+            delete: '@Url.Action("Delete", "RestaurantOrder")',
+            getOrderStatus: '@Url.Action("GetOrderStatus", "RestaurantOrder")',
+            updateOrderStatus: '@Url.Action("UpdateStatus", "RestaurantOrder")'
+        };
+
+        var tooltip = {
+            edit: '@Resources.Res_Edit',
+            delete: '@Resources.Res_Delete'
+        }
+
+    </script>
+}

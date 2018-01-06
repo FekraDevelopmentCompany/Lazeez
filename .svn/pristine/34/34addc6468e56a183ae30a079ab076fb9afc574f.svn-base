@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pranzo.Model.ViewModel
+{
+  public  class APIResponse
+    {
+        public bool State { get; set; }
+        public string Message { get; set; }
+        public object Data { get; set; }
+    }
+}

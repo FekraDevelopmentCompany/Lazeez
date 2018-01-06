@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using System.Web.Mvc.Html;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Web.Helpers
+{
+    public static class HtmlHelpersExtensions
+    {
+        public static MvcHtmlString YesNoDropDownListFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes)
+        {
+            var metadataModel = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "true" ,Selected = metadataModel?.Equals(true) ?? false},
+                new SelectListItem{ Text = Resources.Res_No, Value = "false" ,Selected = metadataModel?.Equals(false) ?? false}
+            };
+            return htmlHelper.DropDownListFor(expression, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, string defaultValue, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = defaultValue, Value = "" },
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, string defaultValue, string selectedValue, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = defaultValue, Value = "" },
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1", Selected = selectedValue == "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0", Selected = selectedValue == "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+    }
+}

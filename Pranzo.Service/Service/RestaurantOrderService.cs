@@ -1,0 +1,110 @@
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using Lazeez.Entities.Model;
+using Lazeez.Helper;
+using Lazeez.Repository.UnitOfWork;
+using Lazeez.Service.Infrastructure;
+using Lazeez.Model.DBModel;
+using Lazeez.Model.ViewModel;
+
+namespace Lazeez.Service.Service
+{
+    public class RestaurantOrderService : BaseService<tbl_RestaurantOrder, RestaurantOrder>
+    {
+        public RestaurantOrderService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantOrder>();
+        }
+
+        #region BaseService Operations
+
+        public override int Insert(RestaurantOrder model, bool autoSave = false)
+        {
+            model.OrderTime = DateTime.Now;
+            model.Status = (int)Enums.RestaurantOrderStatus.Draft;
+            return base.Insert(model, autoSave);
+        }
+
+        public override void Delete(int id)
+        {
+            // Delete Restaurant OrderMeal
+            var restaurantOrderMealService = unitOfWork.Service<RestaurantOrderMealService>();
+            restaurantOrderMealService.Delete(m => m.RestaurantOrderID == id);
+
+            // Delete Restaurant Order
+            base.Delete(id);
+        }
+
+        public override void Delete(Expression<Func<RestaurantOrder, bool>> whereCondition)
+        {
+            var restaurantOrderMealService = unitOfWork.Service<RestaurantOrderMealService>();
+            var lstRestaurantOrders = GetAll(whereCondition);
+            int id;
+
+            for (int i = 0; i < lstRestaurantOrders.Count; i++)
+            {
+                id = lstRestaurantOrders[i].ID;
+
+                // Delete Restaurant OrderMeal
+                restaurantOrderMealService.Delete(m => m.RestaurantOrderID == id);
+            }
+
+            // Delete Restaurant Order
+            base.Delete(whereCondition);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public void UpdateStatus(int id, int status)
+        {
+            var restaurantOrder = GetById(id);
+            restaurantOrder.Status = status;
+            restaurantOrder.DeliveryTime = status == (int)Enums.RestaurantOrderStatus.Delivered ? (DateTime?)DateTime.Now : null;
+            base.Update(restaurantOrder);
+        }
+
+        public JQueryDataTables<RestaurantOrderSearch> Search(RestaurantOrderSearchParams prms)
+        {
+            // Parameters
+            if (prms.RestaurantBranchID == null)
+                prms.RestaurantBranchID = -1;
+
+            var ignoreStatusId = prms.StatusID == null;
+
+            // Declare Repository
+            var restaurantBranchRepositry = unitOfWork.Repository<tbl_RestaurantBranch>();
+
+            var restaurantOrders = (from ro in repository.Table
+                                    join rb in restaurantBranchRepositry.Table on ro.RestaurantBranchID equals rb.ID
+                                    where ro.IsDeleted == false
+                                       && (ro.RestaurantBranchID == prms.RestaurantBranchID.Value)
+                                       && (ignoreStatusId || ro.Status == prms.StatusID.Value)
+                                    select new RestaurantOrderSearch
+                                    {
+                                        ID = ro.ID,
+                                        BranchName = rb.Name,
+                                        TotalCost = ro.TotalCost,
+                                        DeliveryCost = ro.DeliveryCost,
+                                        Tax = ro.Tax,
+                                        OrderTime = ro.OrderTime,
+                                        DeliveryTime = ro.DeliveryTime,
+                                        Status = ro.Status,
+                                        PaymentType = ro.PaymentType
+                                    })
+                                    .OrderBy(prms.OrderBy);
+
+            return new JQueryDataTables<RestaurantOrderSearch>
+            {
+                iTotalRecords = restaurantOrders.Count(),
+                iTotalDisplayRecords = restaurantOrders.Count(),
+                aaData = restaurantOrders.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

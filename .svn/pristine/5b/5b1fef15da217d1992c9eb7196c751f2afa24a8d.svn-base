@@ -1,0 +1,98 @@
+﻿using System;
+using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantMealService : BaseService<tbl_RestaurantMeal, RestaurantMeal>
+    {
+        public RestaurantMealService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantMeal>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Restaurant MealException
+            var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+            restaurantMealExceptionService.Delete(m => m.RestaurantMealID == id);
+
+            // Delete Restaurant Meal
+            base.Delete(id);
+        }
+
+        public override void Delete(Expression<Func<RestaurantMeal, bool>> whereCondition)
+        {
+            var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+            var restaurantMeal = GetAll(whereCondition);
+            int id;
+
+            for (int i = 0; i < restaurantMeal.Count; i++)
+            {
+                id = restaurantMeal[i].ID;
+
+                // Delete Restaurant MealException
+                restaurantMealExceptionService.Delete(m => m.RestaurantMealID == id);
+            }
+
+            // Delete Restaurant Meal
+            base.Delete(whereCondition);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantMealSearch> Search(RestaurantMealSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+            var ignoreMealException = !prms.RestaurantMealExceptionID.HasValue;
+            var mealExceptionFilteration = new List<int>();
+
+            if (!ignoreMealException)
+            {
+                mealExceptionFilteration = unitOfWork.Repository<tbl_RestaurantMealException>().Table
+                                          .Where(x => x.MealExceptionID == prms.RestaurantMealExceptionID)
+                                          .Select(y => y.RestaurantMealID).ToList();
+            }
+
+            var restaurantMeals = (from restMeal in repository.Table
+                                   where restMeal.IsDeleted == false
+                                      && restMeal.RestaurantID == prms.RestaurantID
+                                      && (ignoreName || restMeal.Name.Contains(prms.Name))
+                                      && (ignoreMealException || mealExceptionFilteration.Contains(restMeal.ID))
+                                   select new RestaurantMealSearch
+                                   {
+                                       ID = restMeal.ID,
+                                       Name = restMeal.Name,
+                                       Calories = restMeal.Calories,
+                                       Cost = restMeal.Cost,
+                                       NumberOfPerson = restMeal.NumberOfPersons,
+                                       Temperature = restMeal.Temperature,
+                                       TimeOfMeal = restMeal.TimeOfMeal
+                                   })
+                                    .OrderBy(prms.OrderBy)
+                                    .ToList();
+
+            return new JQueryDataTables<RestaurantMealSearch>
+            {
+                iTotalRecords = restaurantMeals.Count,
+                iTotalDisplayRecords = restaurantMeals.Count,
+                aaData = restaurantMeals.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

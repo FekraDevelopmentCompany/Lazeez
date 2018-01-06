@@ -1,0 +1,10 @@
+﻿using Pranzo.Model.Infrastructure;
+
+namespace Pranzo.Model.DBModel
+{
+    public class UserInterest : BaseEntity
+    {
+        public int UserID { get; set; }
+        public int FoodTypeID { get; set; }
+    }
+}

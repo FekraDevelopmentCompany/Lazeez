@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using System.Web.Mvc.Html;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Web.Helpers
+{
+    public static class HtmlHelpersExtensions
+    {
+        public static MvcHtmlString YesNoDropDownListFor<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, object htmlAttributes)
+        {
+            var metadataModel = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "true" ,Selected = metadataModel?.Equals(true) ?? false},
+                new SelectListItem{ Text = Resources.Res_No, Value = "false" ,Selected = metadataModel?.Equals(false) ?? false}
+            };
+            return htmlHelper.DropDownListFor(expression, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, string defaultValue, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = defaultValue, Value = "" },
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString YesNoDropDownList(this HtmlHelper htmlHelper, string name, string defaultValue, string selectedValue, object htmlAttributes)
+        {
+            var selectList = new List<SelectListItem>
+            {
+                new SelectListItem{ Text = defaultValue, Value = "" },
+                new SelectListItem{ Text = Resources.Res_Yes, Value = "1", Selected = selectedValue == "1" },
+                new SelectListItem{ Text = Resources.Res_No, Value = "0", Selected = selectedValue == "0" }
+            };
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString EnumsDropDownListFor<TModel, TEnum, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression, TEnum dataSource, object htmlAttributes, string defaultValue = null)
+        {
+            // selected value of EnumsDropDownListFor
+            var metadataModel = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+
+            // fill EnumsDropDownListFor from enum
+            var values = (int[])Enum.GetValues(typeof(TEnum));
+            var names = Enum.GetNames(typeof(TEnum));
+            var selectList = new List<SelectListItem>();
+
+            if (defaultValue != null)
+                selectList.Add(new SelectListItem { Text = defaultValue, Value = "" });
+
+            for (var i = 0; i < values.Count(); i++)
+                selectList.Add(new SelectListItem { Text = names[i], Value = values[i].ToString(), Selected = metadataModel != null ? values[i].ToString().Equals(metadataModel.ToString()) : false });
+
+            return htmlHelper.DropDownListFor(expression, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString EnumsDropDownList<TEnum>(this HtmlHelper htmlHelper, string name, TEnum dataSource, object htmlAttributes, string defaultValue = null)
+        {
+            // fill EnumsDropDownListFor from enum
+            var values = (int[])Enum.GetValues(typeof(TEnum));
+            var names = Enum.GetNames(typeof(TEnum));
+            var selectList = new List<SelectListItem>();
+
+            if (defaultValue != null)
+                selectList.Add(new SelectListItem { Text = defaultValue, Value = string.Empty });
+
+            for (var i = 0; i < values.Count(); i++)
+                selectList.Add(new SelectListItem { Text = names[i], Value = values[i].ToString() });
+
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+
+        public static MvcHtmlString EnumsDropDownList<TEnum>(this HtmlHelper htmlHelper, string name, TEnum dataSource, int selectedValue, object htmlAttributes, string defaultValue = null)
+        {
+            // fill EnumsDropDownListFor from enum
+            var values = (int[])Enum.GetValues(typeof(TEnum));
+            var names = Enum.GetNames(typeof(TEnum));
+            var selectList = new List<SelectListItem>();
+
+            if (defaultValue != null)
+                selectList.Add(new SelectListItem { Text = defaultValue, Value = string.Empty });
+
+            for (var i = 0; i < values.Count(); i++)
+                selectList.Add(new SelectListItem { Text = names[i], Value = values[i].ToString(), Selected = values[i].ToString().Equals(selectedValue.ToString()) });
+
+            return htmlHelper.DropDownList(name, selectList, htmlAttributes);
+        }
+    }
+}

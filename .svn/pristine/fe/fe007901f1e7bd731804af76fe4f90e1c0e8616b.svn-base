@@ -1,0 +1,125 @@
+﻿using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Model.DBModel;
+using Pranzo.Web.Helpers.Filters;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant
+        [AuthorizeUser]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantSearchParams prms)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var restaurants = restaurantService.Search(prms);
+            return Json(restaurants, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [AuthorizeUser]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        [AuthorizeUser]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            restaurantService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        [HttpGet]
+        public ActionResult ValidateNumberOfRestaurant()
+        {
+            int maxNumberOfRestaurant;
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var isValid = restaurantService.IsValidNumberOfRestaurant(GlobalSettings.CurrentUserID, out maxNumberOfRestaurant);
+
+            if (isValid) return Json(true, JsonRequestBehavior.AllowGet);
+
+            return PartialView("Dialogs/_Message", new MessageDialog
+            {
+                Title = Resources.Res_Info,
+                Message = string.Format(Messages.Msg_MaxNumberOfRestaurant, maxNumberOfRestaurant),
+                Type = MessageDialog.ButtonType.Info
+            });
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id = -1)
+        {
+            RestaurantModel model = new RestaurantModel();
+
+            if (id == -1) // Add
+            {
+                model.RestaurantVM = new Restaurant();
+            }
+            else // Edit
+            {
+                var restaurantService = unitOfWork.Service<RestaurantService>();
+                model.RestaurantVM = restaurantService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantService = unitOfWork.Service<RestaurantService>();
+
+                if (model.RestaurantVM.ID > 0)    // Edit
+                {
+                    restaurantService.Update(model.RestaurantVM);
+                    unitOfWork.Save();
+                }
+                else // Add
+                {
+                    model.RestaurantVM.ID = restaurantService.Insert(model.RestaurantVM, true);
+                }
+
+                return Json(new JsonResponse { ID = model.RestaurantVM.ID, Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index"), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantModel model)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var exists = restaurantService.Exists(r => r.ID != model.RestaurantVM.ID && r.Name == model.RestaurantVM.Name);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,14 @@
+﻿using Pranzo.Model.Infrastructure;
+
+namespace Pranzo.Model.DBModel
+{
+    public class RestaurantBranch : BaseEntity
+    {
+        public int ID { get; set; }
+        public int RestaurantID { get; set; }
+        public int DistrictID { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public bool IsMain { get; set; }
+    }
+}

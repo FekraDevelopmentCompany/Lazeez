@@ -1,0 +1,16 @@
+﻿using Pranzo.Helper;
+using Pranzo.Repository.UnitOfWork;
+using System.Web.Http;
+
+namespace Pranzo.WebApi.Controllers
+{
+    public class BaseController : ApiController
+    {
+        protected IUnitOfWork unitOfWork = new UnitOfWork();
+
+        public BaseController()
+        {
+            Localization.SetCulture(GlobalSettings.CurrentCulture);
+        }
+    }
+}

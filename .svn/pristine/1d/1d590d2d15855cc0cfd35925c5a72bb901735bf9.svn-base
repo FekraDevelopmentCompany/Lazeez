@@ -1,0 +1,145 @@
+﻿var param = function (aoData) {
+    aoData.push({ name: "RestaurantBranchID", value: $("#ddl_RestaurantBranches").val() });
+    aoData.push({ name: "StatusID", value: $("#ddl_Status").val() });
+}
+
+$(document).ready(function () {
+
+    setInterval(refreshGrid, 20000); // refresh grid every 20 seconds
+
+    if ($("#ddl_RestaurantBranches").val() === null)
+        $("#btn_Add").hide();
+
+    // get list of order status
+    var lstOrderStatus = getOrderStatus();
+
+    // datatable columns rendering
+    var renderStatus = function (data, type, row) {
+        var $select = $("<select id='" + row["ID"] + "' class='status form-control'></select>");
+        $.each(lstOrderStatus, function (index, item) {
+            var $option = $("<option></option>", {
+                "text": item.Text,
+                "value": item.Value
+            });
+            if (data == item.Value) {
+                $option.attr("selected", "selected");
+            }
+            $select.append($option);
+        });
+
+        return $select.prop("outerHTML");
+    }
+
+    var renderEdit = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/edit.png' class='edit datatable-icons' title='" + tooltip.edit + "'/>";
+    }
+
+    var renderDelete = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/delete.png' class='delete datatable-icons' title='" + tooltip.delete + "'/>";
+    }
+
+    var rowCallBack = function (row, data) {
+        if (data["Status"] === 2) {
+            $(row).css("background-color", "#cceeff"); // Received
+        }
+        else if (data["Status"] === 3) {
+            $(row).css("background-color", "#ffe0b3"); // Ongoing
+        }
+        else if (data["Status"] === 4) {
+            $(row).css("background-color", "#b3ffcc"); // Delivered
+        }
+    }
+
+    // initialize datatable columns
+    var columns = [
+        { data: "ID", sName: "ID" },
+        { data: "BranchName", sName: "BranchName" },
+        { data: "TotalCost", sName: "TotalCost" },
+        { data: "DeliveryCost", sName: "DeliveryCost" },
+        { data: "Tax", sName: "Tax" },
+        { data: "OrderTime", sName: "OrderTime", mRender: renderDateTime },
+        { data: "DeliveryTime", sName: "DeliveryTime", mRender: renderDateTime },
+        { data: "PaymentType", sName: "PaymentType" },
+        { data: "Status", sName: "Status", mRender: renderStatus },
+        { mRender: renderEdit, "bSortable": false },
+        { mRender: renderDelete, "bSortable": false }
+    ];
+
+    // initialize datatable grid
+    initializeGrid("#grid", links.search, columns, false, param, 0, true, true, rowCallBack);
+});
+
+
+// search button
+$(document).on("click", "#btn_Search", function () {
+    refreshGrid();
+});
+
+// cancel button
+$(document).on("click", "#btn_Cancel", function () {
+    $("select").val("");
+    refreshGrid();
+});
+
+// add button
+$(document).on("click", "#btn_Add", function () {
+    window.location.href = links.addEdit + "?id=-1&restaurantBranchId=" + $("#ddl_RestaurantBranches").val();
+});
+
+// edit grid icon
+$(document).on("click", ".edit", function () {
+    window.location.href = links.addEdit + "?id=" + this.id + "&restaurantBranchId=" + $("#ddl_RestaurantBranches").val();
+});
+
+// delete grid icon
+$(document).on("click", ".delete", function () {
+    $.ajax({
+        url: links.delete,
+        type: "GET",
+        data: { id: this.id },
+        success: function (data) {
+            openPopupDialog(data);
+        }
+    });
+});
+
+// status grid dropdown list click
+var oldStatus;
+var oldStatusValue;
+$(document).on("focus", ".status", function () {
+    oldStatus = this;
+    oldStatusValue = this.value;
+});
+
+// status grid dropdown list change
+$(document).on("change", ".status", function () {
+    $.ajax({
+        url: links.updateOrderStatus,
+        type: "GET",
+        data: { id: this.id + ":" + this.value },
+        success: function (data) {
+            openPopupDialog(data);
+        }
+    });
+});
+
+$(document).on("click", "#btn_CancelPopup", function () {
+    // reset selected value again
+    oldStatus.value = oldStatusValue;
+});
+
+function getOrderStatus() {
+    var status = [];
+
+    $.ajax({
+        type: "GET",
+        url: links.getOrderStatus,
+        async: false,
+        cache: false,
+        success: function (data) {
+            status = data;
+        }
+    });
+
+    return status;
+}

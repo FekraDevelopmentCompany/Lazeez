@@ -1,0 +1,1 @@
+﻿<button type="submit" id="btn_Ok" class="btn btn-success" data-backdrop="static"><i class="fa fa-check"></i> @Pranzo.Resource.Shared.Buttons.Btn_Ok</button>

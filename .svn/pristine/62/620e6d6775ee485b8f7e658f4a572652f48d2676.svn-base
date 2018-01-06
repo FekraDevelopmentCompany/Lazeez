@@ -1,0 +1,61 @@
+﻿using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+
+namespace Pranzo.Service.Service
+{
+    public class AccountService : BaseService<tbl_User, UserModel>
+    {
+        public AccountService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_User>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+        public bool SignUp(UserModel Model, out tbl_User User, out string Message)
+        {
+            bool isSaved = false;
+            User = null;
+            Message = "";
+
+            if (base.Exists(r => r.ID != Model.ID && r.Name == Model.Name))
+            {
+                Message = "User name should be uniqe.";
+                return isSaved;
+            }
+
+            if (base.Exists(r => r.ID != Model.ID && r.Email == Model.Email))
+            {
+                Message = "Email should be uniqe.";
+                return isSaved;
+            }
+
+            //Normal User Type
+            Model.UserTypeID = (short)Enums.UserType.Normal;
+            Mapper.Instance.CreateMap<UserModel, tbl_User>();
+            tbl_User table = Mapper.Instance.Map<UserModel, tbl_User>(Model);
+
+            //Make Password Hashed
+            table.Password = StringCipher.Hash(Model.Password);
+
+            if (!string.IsNullOrEmpty(Model.DeviceToken))
+                table.tbl_UserDeviceToken.Add(new tbl_UserDeviceToken { tbl_User = table, DeviceToken = Model.DeviceToken });
+
+            repository.Insert(table);
+            User = table;
+            isSaved =  true;
+            return isSaved;
+        }
+       
+        #endregion
+    }
+}

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <WebPublishMethod>MSDeploy</WebPublishMethod>
+    <ADUsesOwinOrOpenIdConnect>False</ADUsesOwinOrOpenIdConnect>
+    <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
+    <LastUsedPlatform>Any CPU</LastUsedPlatform>
+    <SiteUrlToLaunchAfterPublish>http://pranzo.simplexadmin.com/</SiteUrlToLaunchAfterPublish>
+    <LaunchSiteAfterPublish>True</LaunchSiteAfterPublish>
+    <ExcludeApp_Data>False</ExcludeApp_Data>
+    <MSDeployServiceURL>icebreak.host4asp.net:8172</MSDeployServiceURL>
+    <DeployIisAppPath>pranzo.simplexadmin.com</DeployIisAppPath>
+    <RemoteSitePhysicalPath />
+    <SkipExtraFilesOnServer>True</SkipExtraFilesOnServer>
+    <MSDeployPublishMethod>WMSVC</MSDeployPublishMethod>
+    <EnableMSDeployBackup>False</EnableMSDeployBackup>
+    <UserName>pranzo.simplex_dploy</UserName>
+    <_SavePWD>True</_SavePWD>
+    <PublishDatabaseSettings>
+      <Objects>
+        <ObjectGroup Name="PranzoEntities" Order="1" Enabled="False">
+          <Destination Path="Data Source=icebreak.host4asp.net,1430;Initial Catalog=simplexa_Pranzo;Persist Security Info=True;User ID=simplexa_PranzoDBUser;Password=Pranzo123;Application Name=EntityFramework" Name="" />
+          <Object Type="DbCodeFirst">
+            <Source Path="DBContext" DbContext="Pranzo.Repository.Infrastructure.EFContext, Pranzo.Repository" Origin="Configuration" />
+          </Object>
+        </ObjectGroup>
+      </Objects>
+    </PublishDatabaseSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <MSDeployParameterValue Include="$(DeployParameterPrefix)PranzoEntities-Web.config Connection String">
+      <ParameterValue>metadata=res://*/Model.Pranzo.csdl|res://*/Model.Pranzo.ssdl|res://*/Model.Pranzo.msl;provider=System.Data.SqlClient;provider connection string="Data Source=icebreak.host4asp.net,1430;Initial Catalog=simplexa_Pranzo;Persist Security Info=True;User ID=simplexa_PranzoDBUser;Password=Pranzo123;Application Name=EntityFramework"</ParameterValue>
+    </MSDeployParameterValue>
+  </ItemGroup>
+</Project>

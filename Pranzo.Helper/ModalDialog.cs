@@ -1,0 +1,23 @@
+﻿using System.Collections.Generic;
+
+namespace Lazeez.Helper
+{
+    public class ModalDialog
+    {
+        public class ModelSize
+        {
+            public const string Default = "";
+            public const string Small = "modal-sm";
+            public const string Large = "modal-lg";
+        }
+
+        public string Header { get; set; }
+        public string Body { get; set; }
+        public List<string> Footer { get; set; }
+        public string Size { get; set; }
+        public object Model { get; set; }
+        public string Area { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
+    }
+}

@@ -1,0 +1,53 @@
+﻿@model Lazeez.Model.ViewModel.RestaurantFoodModel
+@using Lazeez.Resource.ControlPanel
+@using Lazeez.Resource.Shared
+
+@using (Ajax.BeginForm("Save", "RestaurantFood", new { area = "ControlPanel" },
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+        new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantFoodVM.ID)
+    @Html.HiddenFor(model => model.RestaurantFoodVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantFoodVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantFood.RestaurantFoods</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantFood.RestaurantName</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantFood.FoodType<span class="required"> *</span></label>
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.RestaurantFoodVM.FoodTypeID, Model.ListFoodTypes, new { @id="ddl_FoodTypes", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RestaurantFoodVM.FoodTypeID)
+                    </div>
+                    <div class="col-md-2">
+                        <a role="button" id="btn_AddFoodType" class="btn btn-default"><i class="fa fa-plus"></i> @Buttons.Btn_AddFoodType </a>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Save")
+                @Html.Partial("Buttons/_CancelAddEdit")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Areas/ControlPanel/Scripts/RestaurantFood/AddEdit.js"></script>
+    <script>
+        var links = {
+            addFoodType: '@Url.Action("AddFoodType", "RestaurantFood")'
+        };
+
+    </script>
+}

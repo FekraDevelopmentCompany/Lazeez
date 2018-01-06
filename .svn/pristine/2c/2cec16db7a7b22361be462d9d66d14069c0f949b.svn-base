@@ -1,0 +1,85 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantMenuService : BaseService<tbl_RestaurantMenu, RestaurantMenu>
+    {
+        public RestaurantMenuService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantMenu>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Source Image
+            var sourceImageService = unitOfWork.Service<SourceImageService>();
+            sourceImageService.Delete(s => s.SourceID == id && s.SourceTypeID == (short)Enums.SourceType.RestaurantMenu);
+
+            // Delete Restaurant Menu
+            base.Delete(id);
+        }
+
+        public override void Delete(Expression<Func<RestaurantMenu, bool>> whereCondition)
+        {
+            var sourceImageService = unitOfWork.Service<SourceImageService>();
+            var restaurantMenu = GetAll(whereCondition);
+            int id;
+
+            for (int i = 0; i < restaurantMenu.Count; i++)
+            {
+                id = restaurantMenu[i].ID;
+
+                // Delete Source Image
+                sourceImageService.Delete(s => s.SourceID == id && s.SourceTypeID == (short)Enums.SourceType.RestaurantMenu);
+            }
+
+            // Delete Restaurant Menu
+            base.Delete(whereCondition);
+        }
+
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantMenuSearch> Search(RestaurantMenuSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+
+            var restaurantMenus = (from rm in repository.Table
+                                   where rm.IsDeleted == false
+                                      && rm.RestaurantID == prms.RestaurantID
+                                      && (ignoreName || rm.Name.Contains(prms.Name))
+                                   select new RestaurantMenuSearch
+                                   {
+                                       ID = rm.ID,
+                                       Name = rm.Name,
+                                       Description = rm.Description
+                                   })
+                                    .OrderBy(prms.OrderBy)
+                                    .ToList();
+
+            return new JQueryDataTables<RestaurantMenuSearch>
+            {
+                iTotalRecords = restaurantMenus.Count,
+                iTotalDisplayRecords = restaurantMenus.Count,
+                aaData = restaurantMenus.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

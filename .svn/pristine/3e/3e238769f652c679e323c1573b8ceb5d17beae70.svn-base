@@ -1,0 +1,41 @@
+﻿using System.IO;
+using System.Web;
+
+namespace Pranzo.Helper
+{
+    public static class Upload
+    {
+        public static string GetTempFullPath()
+        {
+            var directoryTempPath = HttpContext.Current.Server.MapPath(Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UploadPath"], "Temp"));
+            var directory = new DirectoryInfo(directoryTempPath);
+
+            if (!directory.Exists) directory.Create();
+            return directoryTempPath;
+        }
+
+        public static string GetTempFullPath(string fileName)
+        {
+            var directoryTempPath = GetTempFullPath();
+            return Path.Combine(directoryTempPath, fileName);
+        }
+
+        public static string GetFullPath(int sourceId, Enums.SourceType sourceType)
+        {
+            var directoryPath = HttpContext.Current.Server.MapPath(Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UploadPath"], sourceType.ToString(), sourceId.ToString()));
+            var directory = new DirectoryInfo(directoryPath);
+
+            if (!directory.Exists) directory.Create();
+            return directoryPath;
+        }
+
+        public static string GetAbsolutePath(int sourceId, Enums.SourceType sourceType)
+        {
+            var directoryPath = VirtualPathUtility.ToAbsolute(Path.Combine(System.Configuration.ConfigurationManager.AppSettings["UploadPath"], sourceType.ToString(), sourceId.ToString()));
+            var directory = new DirectoryInfo(directoryPath);
+
+            if (!directory.Exists) directory.Create();
+            return directoryPath;
+        }
+    }
+}

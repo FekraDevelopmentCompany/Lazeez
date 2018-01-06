@@ -1,0 +1,122 @@
+﻿var param = function (aoData) {
+    aoData.push({ name: "Name", value: $("#txt_Name").val() });
+    aoData.push({ name: "Mobile", value: $("#txt_Mobile").val() });
+    aoData.push({ name: "Phone", value: $("#txt_Phone").val() });
+    aoData.push({ name: "CanReserveTables", value: $("#ddl_CanReserveTables").val() });
+    aoData.push({ name: "AllowSmoking", value: $("#ddl_AllowSmoking").val() });
+    aoData.push({ name: "Type", value: $("#ddl_Type").val() });
+}
+
+$(document).ready(function () {
+
+    // datatable columns rendering
+    var renderEdit = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/edit.png' class='edit datatable-icons' title='" + tooltip.edit + "'/>";
+    }
+
+    var renderDelete = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/delete.png' class='delete datatable-icons' title='" + tooltip.delete + "'/>";
+    }
+
+    var renderBranch = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/Resturantbranch.png' class='branches datatable-icons' title='" + tooltip.branch + "'  />";
+    }
+
+    var renderMenu = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/menu.png' class='menu datatable-icons' title='" + tooltip.menu + "'  />";
+    }
+
+    var renderFood = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/food.png' class='food datatable-icons' title='" + tooltip.food + "'  />";
+    }
+
+    var renderTime = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/time.png' class='time datatable-icons' title='" + tooltip.time + "'  />";
+    }
+
+    var renderMeal = function (data, type, row) {
+        return "<img id='" + row["ID"] + "' src='../Content/images/grid-icons/RestaurantMeal.png' class='time datatable-icons' title='" + tooltip.Meal + "'  />";
+    }
+
+    // initialize datatable columns
+    var columns = [
+        { data: "ID", sName: "ID" },
+        { data: "Name", sName: "Name" },
+        { data: "Type", sName: "Type" },
+        { data: "Mobile", sName: "Mobile" },
+        { data: "Phone", sName: "Phone" },
+        { data: "NumberOfStaff", sName: "NumberOfStaff" },
+        { data: "NumberOfTables", sName: "NumberOfTables" },
+        { data: "TimeToDelivery", sName: "TimeToDelivery" },
+        { mRender: renderEdit, "bSortable": false },
+        { mRender: renderDelete, "bSortable": false },
+        { mRender: renderBranch, "bSortable": false },
+        { mRender: renderMenu, "bSortable": false },
+        { mRender: renderFood, "bSortable": false },
+        { mRender: renderTime, "bSortable": false },
+        { mRender: renderMeal, "bSortable": false }
+    ];
+
+    // initialize datatable grid
+    initializeGrid("#grid", links.search, columns, false, param, 0, true, true);
+});
+
+
+// search button
+$(document).on("click", "#btn_Search", function () {
+    refreshGrid();
+});
+
+// cancel button
+$(document).on("click", "#btn_Cancel", function () {
+    $(":text").val("");
+    $("select").val("");
+    refreshGrid();
+});
+
+// add button
+$(document).on("click", "#btn_Add", function () {
+    window.location.href = links.addEdit + "?id=-1";
+});
+
+// edit grid icon
+$(document).on("click", ".edit", function () {
+    window.location.href = links.addEdit + "?id=" + this.id;
+});
+
+// delete grid icon
+$(document).on("click", ".delete", function () {
+    $.ajax({
+        url: links.delete,
+        type: "GET",
+        data: { id: this.id },
+        success: function (data) {
+            openPopupDialog(data);
+        }
+    });
+});
+
+// restaurant menu grid icon
+$(document).on("click", ".menu", function () {
+    window.location.href = links.menu + "?restaurantId=" + this.id;
+});
+
+// restaurant food grid icon
+$(document).on("click", ".food", function () {
+    window.location.href = links.food + "?restaurantId=" + this.id;
+});
+
+// restaurant Branch grid icon
+$(document).on("click", ".branches", function () {
+    window.location.href = links.branch + "?restaurantId=" + this.id;
+});
+
+// restaurant time grid icon
+$(document).on("click", ".time", function () {
+    window.location.href = links.time + "?restaurantId=" + this.id;
+});
+
+// restaurant Meal grid icon
+$(document).on("click", ".time", function () {
+    window.location.href = links.Meal + "?restaurantId=" + this.id;
+});

@@ -1,0 +1,25 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantOrderMealService : BaseService<tbl_RestaurantOrderMeal, RestaurantOrderMeal>
+    {
+        public RestaurantOrderMealService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantOrderMeal>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+
+        #endregion
+    }
+}

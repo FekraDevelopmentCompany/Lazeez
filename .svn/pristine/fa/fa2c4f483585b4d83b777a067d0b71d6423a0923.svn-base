@@ -1,0 +1,88 @@
+﻿using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using System.Collections.Generic;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantMealExceptionService : BaseService<tbl_RestaurantMealException, RestaurantMealException>
+    {
+        public RestaurantMealExceptionService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantMealException>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+
+        public List<KeyValuePair> SelectMealException(int mealId)
+        {
+            var MealExceptionRepositry = unitOfWork.Repository<lkp_MealException>();
+            // Get All Exception That Related to specific Meal
+            return (from restMealException in repository.Table
+                    join mealException in MealExceptionRepositry.Table on restMealException.MealExceptionID equals mealException.ID
+                    where restMealException.IsDeleted == false
+                       && restMealException.RestaurantMealID == mealId
+
+                    select new KeyValuePair
+                    {
+                        Value = mealException.ID.ToString(),
+                        Text = mealException.Name
+                    }).ToList();
+        }
+
+        public List<KeyValuePair> SelectNotMealException(int mealId)
+        {
+            var MealExceptionRepositry = unitOfWork.Repository<lkp_MealException>();
+            List<int> MealException = (from restMealException in repository.Table where restMealException.RestaurantMealID == mealId select restMealException.MealExceptionID).ToList();
+            return (from mealException in MealExceptionRepositry.Table
+                    where !MealException.Contains(mealException.ID)
+                    select new KeyValuePair
+                    {
+                        Value = mealException.ID.ToString(),
+                        Text = mealException.Name
+                    }).ToList();
+        }
+
+         public void Insert (int restaurantMealId , List<int> mealExceptionIds)
+        {
+            // Get Meal Exception That Related to Meal in DataBase
+            List<int> extistMealException = (from restMealException in repository.Table
+                                             where restMealException.RestaurantMealID == restaurantMealId
+                                             select restMealException.MealExceptionID
+                                             ).ToList();
+
+            // Get New item That Exist in MealExcpeionIds and Not Exist in DataBase
+            List<int> NewMealExceptionIds = mealExceptionIds.Where(x => !extistMealException.Contains(x)).ToList();
+            foreach (int mealExceptionId in NewMealExceptionIds)
+            {
+                RestaurantMealException restMealException = new RestaurantMealException();
+                restMealException.MealExceptionID = mealExceptionId;
+                restMealException.RestaurantMealID = restaurantMealId;
+                Insert(restMealException);
+            }
+
+            // Get Deleted Items That Exist In database And not exist on The form
+            List<int> DeletedMealExceptionIds = extistMealException.Where(x => !mealExceptionIds.Contains(x)).ToList();
+            foreach (int mealExceptionId in DeletedMealExceptionIds)
+            {
+                int id = (from restMealException in repository.Table
+                          where restMealException.RestaurantMealID == restaurantMealId
+                          where restMealException.MealExceptionID == mealExceptionId
+                          select restMealException.ID).FirstOrDefault();
+                Delete(id);
+            }
+        }
+
+        #endregion
+    }
+}

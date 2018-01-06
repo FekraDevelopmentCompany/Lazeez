@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4cb59d58781c4cd194eac939d6e4be9c" Name="Diagram1">
+        <EntityTypeShape EntityType="LazeezModel.lkp_City" Width="1.5" PointX="1.5" PointY="18.5" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_Country" Width="1.5" PointX="1.5" PointY="14.75" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_District" Width="1.5" PointX="0.75" PointY="22.5" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_FoodType" Width="1.5" PointX="3.75" PointY="23.5" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_MealException" Width="1.5" PointX="8.25" PointY="38.5" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_SourceImage" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_SourceType" Width="1.5" PointX="0.75" PointY="1.125" />
+        <EntityTypeShape EntityType="LazeezModel.lkp_UserType" Width="1.5" PointX="3" PointY="34.75" />
+        <EntityTypeShape EntityType="LazeezModel.sysdiagram" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_Restaurant" Width="1.5" PointX="0.75" PointY="26.875" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantBranch" Width="1.5" PointX="3" PointY="28" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantFood" Width="1.5" PointX="6" PointY="24.5" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantMeal" Width="1.5" PointX="8.25" PointY="27.625" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantMealException" Width="1.5" PointX="10.5" PointY="28.5" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantMenu" Width="1.5" PointX="6" PointY="28.25" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantOrder" Width="1.5" PointX="8.25" PointY="21.625" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantOrderMeal" Width="1.5" PointX="12.75" PointY="24.5" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantPromotion" Width="1.5" PointX="3" PointY="39.125" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantPromotionMeal" Width="1.5" PointX="10.5" PointY="33.625" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantTable" Width="1.5" PointX="3" PointY="51.125" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantTime" Width="1.5" PointX="3" PointY="47.25" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_RestaurantUserReview" Width="1.5" PointX="13.5" PointY="33.25" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_User" Width="1.5" PointX="5.25" PointY="33.25" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_UserDeviceToken" Width="1.5" PointX="7.5" PointY="49.625" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_UserException" Width="1.5" PointX="10.5" PointY="37.5" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_UserInterest" Width="1.5" PointX="7.5" PointY="34.5" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_UserOrder" Width="1.5" PointX="13.5" PointY="28.75" />
+        <EntityTypeShape EntityType="LazeezModel.tbl_UserRestaurant" Width="1.5" PointX="13.5" PointY="37.375" />
+        <AssociationConnector Association="LazeezModel.FK_lkp_City_lkp_Country_CountryID" />
+        <AssociationConnector Association="LazeezModel.FK_lkp_District_lkp_City_CityID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantBranch_lkp_District_DistrictID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMenu_lkp_FoodType_FoodTypeID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserInterest_lkp_FoodType_FoodTypeID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserException_lkp_MealException_MealExceptionID" />
+        <AssociationConnector Association="LazeezModel.FK_lkp_SourceImage_lkp_SourceType_SourceTypeID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_User_lkp_UserType_UserTypeID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantUserReview_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_User_tbl_RestaurantBranch_RestaurantBranchID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMeal_tbl_RestaurantMenu_RestaurantMenuID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_RestaurantUserReview_tbl_User_UserID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserDeviceToken_tbl_User" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserException_tbl_User_UserID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserInterest_tbl_User_UserID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserOrder_tbl_User_UserID" />
+        <AssociationConnector Association="LazeezModel.FK_tbl_UserRestaurant_tbl_User_UserID" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

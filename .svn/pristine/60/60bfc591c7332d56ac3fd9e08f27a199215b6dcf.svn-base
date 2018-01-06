@@ -1,0 +1,38 @@
+﻿using Pranzo.Model.Infrastructure;
+using Pranzo.Resource.Shared;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
+
+namespace Pranzo.Model.DBModel
+{
+    public class RestaurantMeal : BaseEntity
+    {
+        //Name , Calories,Cost,NumberOfPersons,Temperature,TimeOfMeal
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int RestaurantID { get; set; }
+        
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [Remote("IsUnique", "RestaurantMeal", AdditionalFields = "ID , RestaurantID", ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_AlreadyExists")]
+        public string Name { get; set; }
+        
+        public int Calories { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public decimal Cost { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Temperature { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int NumberOfPersons { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string TimeOfMeal { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Contents { get; set; }
+    }
+}

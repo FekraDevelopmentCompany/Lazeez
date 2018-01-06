@@ -1,0 +1,68 @@
+﻿using System.Linq;
+using Lazeez.Entities.Model;
+using Lazeez.Repository.UnitOfWork;
+using Lazeez.Service.Infrastructure;
+using Lazeez.Model.DBModel;
+using Lazeez.Helper;
+using Lazeez.Model.ViewModel;
+
+namespace Lazeez.Service.Service
+{
+    public class RestaurantPromotionService : BaseService<tbl_RestaurantPromotion, RestaurantPromotion>
+    {
+        public RestaurantPromotionService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantPromotion>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Restaurant Promotion Meal
+            var restaurantPromotionMealService = unitOfWork.Service<RestaurantPromotionMealService>();
+            restaurantPromotionMealService.Delete(m => m.RestaurantPromotionID == id);
+
+            // Delete Restaurant Meal
+            base.Delete(id);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantPromotionSearch> Search(RestaurantPromotionSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+            var ignorePromotionDateFrom = !prms.PromotionDateFrom.HasValue;
+
+            var restaurantPromotions = (from restPromotion in repository.Table
+                                        where restPromotion.IsDeleted == false
+                                           && restPromotion.RestaurantID == prms.RestaurantID
+                                           && (ignoreName || restPromotion.Name.Contains(prms.Name))
+                                           && (ignorePromotionDateFrom || restPromotion.StartDate > prms.PromotionDateFrom)
+                                           && (ignorePromotionDateFrom || restPromotion.EndDate < prms.PromotionDateTo)
+                                        select new RestaurantPromotionSearch
+                                        {
+                                            ID = restPromotion.ID,
+                                            Name = restPromotion.Name,
+                                            Percentage = restPromotion.Percentage,
+                                            StartDate = restPromotion.StartDate,
+                                            EndDate = restPromotion.EndDate,
+                                            ForAllUsers = restPromotion.ForAllUsers
+                                        })
+                                                .OrderBy(prms.OrderBy);
+
+            return new JQueryDataTables<RestaurantPromotionSearch>
+            {
+                iTotalRecords = restaurantPromotions.Count(),
+                iTotalDisplayRecords = restaurantPromotions.Count(),
+                aaData = restaurantPromotions.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

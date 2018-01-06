@@ -1,0 +1,66 @@
+﻿using Lazeez.Entities.Model;
+using Lazeez.Helper;
+using Lazeez.Model.DBModel;
+using Lazeez.Model.ViewModel;
+using Lazeez.Repository.UnitOfWork;
+using Lazeez.Service.Infrastructure;
+using System.Linq;
+
+namespace Lazeez.Service.Service
+{
+    public class MealExceptionService : BaseService<lkp_MealException, MealException>
+    {
+        public MealExceptionService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<lkp_MealException>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // TODO Custom Code
+            // Delete RestaurantMealException
+            var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+            restaurantMealExceptionService.Delete(r => r.MealExceptionID == id);
+
+            base.Delete(id);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        /// <summary>
+        /// Search in lkp_MealException By Name
+        /// </summary>
+        /// <param name="prms"></param>
+        /// <returns></returns>
+        public JQueryDataTables<MasterDataSearch> Search(MasterDataSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+
+            var mealExceptions = (from mealExeption in repository.Table
+                                  where mealExeption.IsDeleted == false
+                                     && (ignoreName || mealExeption.Name.Contains(prms.Name))
+                                  select new MasterDataSearch
+                                  {
+                                      ID = mealExeption.ID,
+                                      Name = mealExeption.Name,
+                                      Description = mealExeption.Description
+                                  })
+                                  .OrderBy(prms.OrderBy);
+
+            return new JQueryDataTables<MasterDataSearch>
+            {
+                iTotalRecords = mealExceptions.Count(),
+                iTotalDisplayRecords = mealExceptions.Count(),
+                aaData = mealExceptions.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

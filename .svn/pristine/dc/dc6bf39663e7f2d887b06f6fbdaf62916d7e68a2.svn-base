@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Pranzo.Model.DBModel
+{
+    public class UserModel
+    {
+        public int ID { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string Password { get; set; }
+        [Required]
+        [EmailAddress(ErrorMessage = "Invalid Email Address")]
+        public string Email { get; set; }
+        public string FacebookAccount { get; set; }
+        public string InstgramAccount { get; set; }
+        public string Phone { get; set; }
+        public string DeviceToken { get; set; }
+        public short UserTypeID { get; set; }
+
+    }
+}

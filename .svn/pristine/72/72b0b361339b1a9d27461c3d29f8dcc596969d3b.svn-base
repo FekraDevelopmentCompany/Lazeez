@@ -1,0 +1,15 @@
+﻿@model  Pranzo.Model.ViewModel.SourceImageModel
+
+<input type="hidden" id="txt_SourceId" value="@Model.SourceID">
+<input type="hidden" id="txt_SourceType" value="@Model.SourceType">
+<input id="txtFileUpload" type="file" class="file-loading" accept="image/*" multiple="multiple">
+
+<script>
+    var links = {
+        getImagePreview: '@Url.Action("GetImagePreview", "Upload")',
+        save: '@Url.Action("Save", "Upload")',
+        delete: '@Url.Action("Delete", "Upload")'
+    };
+
+</script>
+<script src="~/Areas/ControlPanel/Scripts/Upload/Index.js"></script>

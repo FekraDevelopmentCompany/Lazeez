@@ -1,0 +1,29 @@
+﻿@model Pranzo.Helper.ModalDialog
+
+@using (Ajax.BeginForm(Model.Action, Model.Controller, new { area = Model.Area },
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnModalSuccess", OnFailure = "OnModalFailure", },
+        new { id = "ModalForm", @class = "form-horizontal" }))
+{
+    <div class="modal-dialog @Model.Size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@Model.Header</h4>
+            </div>
+
+            <div class="modal-body">
+                @Html.Partial(Model.Body, Model.Model)
+            </div>
+
+            @if (Model.Footer != null)
+            {
+                <div class="modal-footer">
+                    @foreach (string footer in Model.Footer)
+                    {
+                        @Html.Partial(footer)
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,29 @@
+﻿using System;
+using System.Web;
+
+public sealed class GlobalSettings
+{
+    public const string AppPrefix = "Pranzo.";
+
+    public static int CurrentUserID
+    {
+        get
+        {
+            return HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"].HasKeys ? int.Parse(HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"].Value) : -1;
+        }
+        set
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"];
+            if (cookie != null)
+                cookie.Value = value.ToString();  // Update cookie value
+            else
+            {
+                cookie = new HttpCookie(AppPrefix + "CurrentUserID");
+                cookie.Value = value.ToString();
+                cookie.Expires = DateTime.Now.AddDays(1);
+            }
+
+            HttpContext.Current.Response.Cookies.Add(cookie);
+        }
+    }
+}

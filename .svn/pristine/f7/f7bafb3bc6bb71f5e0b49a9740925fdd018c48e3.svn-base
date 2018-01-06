@@ -1,0 +1,257 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Helpers;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Web.Helpers;
+using Pranzo.Web.Helpers.Filters;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantOrderController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Order
+        [HttpGet]
+        [AuthorizeUser]
+        public ActionResult Index()
+        {
+            List<KeyValuePair> lstRestaurantBranches;
+            List<KeyValuePair> lstOrderStatus;
+            var currentUserTypeId = GlobalSettings.CurrentUserTypeID;
+
+            if (currentUserTypeId == Enums.UserType.Meter
+             || currentUserTypeId == Enums.UserType.Cashier
+             || currentUserTypeId == Enums.UserType.Chef)
+            {
+                // Get related branch
+                var restaurantBranchId = GlobalSettings.RestaurantBranchID;
+                lstRestaurantBranches = new List<KeyValuePair>();
+
+                if (restaurantBranchId != null)
+                {
+                    var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+                    var branchName = restaurantBranchService.GetName(restaurantBranchId.Value);
+                    lstRestaurantBranches.Add(new KeyValuePair { Text = branchName, Value = restaurantBranchId.Value.ToString() });
+                }
+
+                if (currentUserTypeId == Enums.UserType.Chef)
+                {
+                    lstOrderStatus = new List<KeyValuePair>();
+                    lstOrderStatus.Add(new KeyValuePair { Value = ((int)Enums.RestaurantOrderStatus.Received).ToString(), Text = Enums.RestaurantOrderStatus.Received.ToString() });
+                    lstOrderStatus.Add(new KeyValuePair { Value = ((int)Enums.RestaurantOrderStatus.Ongoing).ToString(), Text = Enums.RestaurantOrderStatus.Ongoing.ToString() });
+                    ViewBag.ListOrderStatus = ListSettings.Load(lstOrderStatus);
+                }
+                else
+                {
+                    var orderStatus = Enum.GetValues(typeof(Enums.RestaurantOrderStatus));
+                    lstOrderStatus = (from object keyValue in orderStatus select new KeyValuePair { Value = ((int)keyValue).ToString(), Text = keyValue.ToString() }).ToList();
+                    ViewBag.ListOrderStatus = ListSettings.Load(lstOrderStatus, Resources.Res_All, (int)Enums.RestaurantOrderStatus.Draft);
+                }
+            }
+            else
+            {
+                var listService = unitOfWork.Service<ListService>();
+                lstRestaurantBranches = listService.Fill_RestaurantBranches(GlobalSettings.CurrentUserID);
+
+                var orderStatus = Enum.GetValues(typeof(Enums.RestaurantOrderStatus));
+                lstOrderStatus = (from object keyValue in orderStatus select new KeyValuePair { Value = ((int)keyValue).ToString(), Text = keyValue.ToString() }).ToList();
+                ViewBag.ListOrderStatus = ListSettings.Load(lstOrderStatus, Resources.Res_All, (int)Enums.RestaurantOrderStatus.Draft);
+            }
+
+            ViewBag.ListRestaurantBranches = ListSettings.Load(lstRestaurantBranches);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantOrderSearchParams prms)
+        {
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            var restaurantOrders = restaurantOrderService.Search(prms);
+            return Json(restaurantOrders, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetOrderStatus()
+        {
+            List<KeyValuePair> lstOrderStatus;
+
+            if (GlobalSettings.CurrentUserTypeID == Enums.UserType.Chef)
+            {
+                lstOrderStatus = new List<KeyValuePair>();
+                lstOrderStatus.Add(new KeyValuePair { Value = ((int)Enums.RestaurantOrderStatus.Received).ToString(), Text = Enums.RestaurantOrderStatus.Received.ToString() });
+                lstOrderStatus.Add(new KeyValuePair { Value = ((int)Enums.RestaurantOrderStatus.Ongoing).ToString(), Text = Enums.RestaurantOrderStatus.Ongoing.ToString() });
+            }
+            else
+            {
+                var orderStatus = Enum.GetValues(typeof(Enums.RestaurantOrderStatus));
+                lstOrderStatus = (from object keyValue in orderStatus select new KeyValuePair { Value = ((int)keyValue).ToString(), Text = keyValue.ToString() }).ToList();
+            }
+
+            return Json(lstOrderStatus, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        [AuthorizeUser]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        [AuthorizeUser]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            restaurantOrderService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        [HttpGet]
+        [AuthorizeUser]
+        public PartialViewResult UpdateStatus(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmUpdate
+            });
+        }
+
+        [HttpPost]
+        [AuthorizeUser]
+        public ActionResult UpdateStatus(ConfirmDialog confirmDialog)
+        {
+            var lstValues = confirmDialog.Id.Split(':');
+            var id = int.Parse(lstValues[0]);
+            var status = int.Parse(lstValues[1]);
+
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            restaurantOrderService.UpdateStatus(id, status);
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantBranchId)
+        {
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            var listService = unitOfWork.Service<ListService>();
+
+            var restaurantId = restaurantBranchService.GetRestaurantID(restaurantBranchId);
+
+            // Get All Restaurant Meals
+            var lstRestaurantMeals = listService.Fill_RestaurantMeal(restaurantId);
+
+            var model = new RestaurantOrderModel
+            {
+                RestaurantBranchName = restaurantBranchService.GetName(restaurantBranchId)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantOrderVM = new RestaurantOrder { RestaurantID = restaurantId, RestaurantBranchID = restaurantBranchId };
+                model.ListOrderMeals = ListSettings.Load(lstRestaurantMeals);
+            }
+            else // Edit
+            {
+                var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+                model.RestaurantOrderVM = restaurantOrderService.GetById(id);
+
+                var restaurantOrderMealService = unitOfWork.Service<RestaurantOrderMealService>();
+                var orderMeals = restaurantOrderMealService.GetRestaurantMealIds(id);
+                model.ListOrderMeals = ListSettings.Load(lstRestaurantMeals, orderMeals);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantOrderModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+                var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+                decimal totalCost = decimal.Zero;
+
+                if (model.SelectedOrderMeals != null && model.SelectedOrderMeals.Count > 0)
+                {
+                    for (int i = 0; i < model.SelectedOrderMeals.Count; i++)
+                    {
+                        totalCost += restaurantMealService.GetCostWithPromotion(model.SelectedOrderMeals[i]);
+                    }
+                }
+
+                model.RestaurantOrderVM.TotalCost = totalCost + model.RestaurantOrderVM.DeliveryCost + model.RestaurantOrderVM.Tax;
+
+                if (model.RestaurantOrderVM.ID > 0) // Edit
+                {
+                    restaurantOrderService.Update(model.RestaurantOrderVM);
+                    unitOfWork.Save();
+                }
+                else // Add
+                {
+                    model.RestaurantOrderVM.ID = restaurantOrderService.Insert(model.RestaurantOrderVM, true);
+                }
+
+                // Save Meals On The Order 
+                if (model.SelectedOrderMeals != null && model.SelectedOrderMeals.Count > 0)
+                {
+                    var restaurantOrderMealService = unitOfWork.Service<RestaurantOrderMealService>();
+                    var orderMealIds = restaurantOrderMealService.GetRestaurantMealIds(model.RestaurantOrderVM.ID);
+
+                    var lstInsert = model.SelectedOrderMeals.Except(orderMealIds).ToList();
+                    var lstDelete = orderMealIds.Except(model.SelectedOrderMeals).ToList();
+
+                    // Insert RestaurantMealException
+                    for (int i = 0; i < lstInsert.Count; i++)
+                    {
+                        var restaurantOrderMeal = new RestaurantOrderMeal
+                        {
+                            RestaurantOrderID = model.RestaurantOrderVM.ID,
+                            RestaurantMealID = lstInsert[i]
+                        };
+                        restaurantOrderMealService.Insert(restaurantOrderMeal);
+                    }
+
+                    // Delete RestaurantOrderMeal
+                    for (int i = 0; i < lstDelete.Count; i++)
+                    {
+                        var restaurantMealId = lstDelete[i];
+                        restaurantOrderMealService.Delete(m => m.RestaurantOrderID == model.RestaurantOrderVM.ID && m.RestaurantMealID == restaurantMealId);
+                    }
+
+                    unitOfWork.Save();
+                }
+
+                return Json(new JsonResponse { ID = model.RestaurantOrderVM.ID, Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index"), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        #endregion
+    }
+}

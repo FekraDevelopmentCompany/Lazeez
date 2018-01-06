@@ -1,0 +1,112 @@
+﻿using System;
+using System.Web;
+
+namespace Pranzo.Helper
+{
+    public sealed class GlobalSettings
+    {
+        public const string AppPrefix = "Pranzo.";
+
+        public static int CurrentUserID
+        {
+            get
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"];
+                return httpCookie != null ? int.Parse(httpCookie.Value) : 0;
+            }
+            set
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"];
+                if (httpCookie != null)
+                    httpCookie.Value = value.ToString();  // Update cookie value
+                else
+                {
+                    httpCookie = new HttpCookie(AppPrefix + "CurrentUserID")
+                    {
+                        Value = value.ToString(),
+                        Expires = DateTime.Now.AddDays(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(httpCookie);
+            }
+        }
+
+        public static string CurrentUserName
+        {
+            get
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserName"];
+                return httpCookie?.Value;
+            }
+            set
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserName"];
+                if (httpCookie != null)
+                    httpCookie.Value = value;  // Update cookie value
+                else
+                {
+                    httpCookie = new HttpCookie(AppPrefix + "CurrentUserName")
+                    {
+                        Value = value,
+                        Expires = DateTime.Now.AddDays(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(httpCookie);
+            }
+        }
+
+        public static Enums.UserType CurrentUserTypeID
+        {
+            get
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserTypeID"];
+                return httpCookie != null ? (Enums.UserType)Enum.Parse(typeof(Enums.UserType), httpCookie.Value) : Enums.UserType.None;
+            }
+            set
+            {
+                var httpCookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserTypeID"];
+                if (httpCookie != null)
+                    httpCookie.Value = ((int)value).ToString();  // Update cookie value
+                else
+                {
+                    httpCookie = new HttpCookie(AppPrefix + "CurrentUserTypeID")
+                    {
+                        Value = ((int)value).ToString(),
+                        Expires = DateTime.Now.AddDays(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(httpCookie);
+            }
+        }
+
+        public static Enums.Culture CurrentCulture
+        {
+            get
+            {
+                // Attempt to read the culture cookie from Request
+                return (HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"] != null) ? (Enums.Culture)Enum.Parse(typeof(Enums.Culture), HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"].Value) : Enums.Culture.En;
+            }
+            set
+            {
+                // Save culture in a cookie
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"];
+                if (cookie != null)
+                    cookie.Value = value.ToString();  // Update cookie value
+                else
+                {
+                    // Create new cookie
+                    cookie = new HttpCookie(AppPrefix + "CurrentCulture")
+                    {
+                        Value = value.ToString(),
+                        Expires = DateTime.Now.AddYears(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+    }
+}

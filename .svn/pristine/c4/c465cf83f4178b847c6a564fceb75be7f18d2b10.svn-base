@@ -1,0 +1,161 @@
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Model.DBModel;
+using Pranzo.Service.Helpers;
+using Pranzo.Web.Helpers;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantFoodController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Food
+        public ActionResult Index(int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var listService = unitOfWork.Service<ListService>();
+            var lstFoodTypes = listService.Fill_FoodType();
+
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+            ViewBag.ListFoodTypes = ListSettings.Load(lstFoodTypes, Resources.Res_All);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantFoodSearchParams prms)
+        {
+            var restaurantFoodService = unitOfWork.Service<RestaurantFoodService>();
+            var restaurantFoods = restaurantFoodService.Search(prms);
+            return Json(restaurantFoods, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantFoodService = unitOfWork.Service<RestaurantFoodService>();
+            restaurantFoodService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var listService = unitOfWork.Service<ListService>();
+
+            var lstFoodTypes = listService.Fill_FoodType();
+
+            var model = new RestaurantFoodModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId),
+                ListFoodTypes = ListSettings.Load(lstFoodTypes, string.Empty)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantFoodVM = new RestaurantFood { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantFoodService = unitOfWork.Service<RestaurantFoodService>();
+                model.RestaurantFoodVM = restaurantFoodService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantFoodModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantFoodService = unitOfWork.Service<RestaurantFoodService>();
+
+                if (model.RestaurantFoodVM.ID > 0)    // Edit
+                {
+                    restaurantFoodService.Update(model.RestaurantFoodVM);
+                }
+                else // Add
+                {
+                    restaurantFoodService.Insert(model.RestaurantFoodVM);
+                }
+
+                unitOfWork.Save();
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantFoodVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantFoodModel model)
+        {
+            var restaurantFoodService = unitOfWork.Service<RestaurantFoodService>();
+            var exists = restaurantFoodService.Exists(rm => rm.ID != model.RestaurantFoodVM.ID
+                                                   && rm.RestaurantID == model.RestaurantFoodVM.RestaurantID
+                                                   && rm.FoodTypeID == model.RestaurantFoodVM.FoodTypeID);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
+        #region Add FoodType
+
+        [HttpGet]
+        public PartialViewResult AddFoodType()
+        {
+            return PartialView("Dialogs/_Modal", new ModalDialog
+            {
+                Header = Buttons.Btn_AddFoodType,
+                Body = "~/Areas/ControlPanel/Views/RestaurantFood/_AddFoodType.cshtml",
+                Footer = new List<string> { "Buttons/_Save", "Buttons/_CancelPopup" },
+                Model = new FoodType(),
+                Area = "ControlPanel",
+                Controller = RouteData.Values["controller"].ToString(),
+                Action = RouteData.Values["action"].ToString()
+            });
+        }
+
+        [HttpPost]
+        public JsonResult AddFoodType(FoodType model)
+        {
+            var foodTypeService = unitOfWork.Service<FoodTypeService>();
+            model.ID = foodTypeService.Insert(model, true);
+            return Json(new KeyValuePair { Text = model.Name, Value = model.ID.ToString() }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult IsFoodTypeUnique(MealException model)
+        {
+            // Check if Food Type Name exist or not 
+            var foodTypeService = unitOfWork.Service<FoodTypeService>();
+            var exists = foodTypeService.Exists(f => f.ID != model.ID && f.Name == model.Name);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

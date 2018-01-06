@@ -1,0 +1,2215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PranzoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="lkp_City">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CountryID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_District">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CityID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_FoodType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_MealException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_SourceImage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SourceID" Type="int" Nullable="false" />
+          <Property Name="SourceTypeID" Type="smallint" Nullable="false" />
+          <Property Name="ImagePath" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_SourceType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="smallint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="lkp_UserType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="smallint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_Restaurant">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="HotLine" Type="nvarchar" MaxLength="50" />
+          <Property Name="NumberOfTables" Type="int" Nullable="false" />
+          <Property Name="NumberOfStaff" Type="int" Nullable="false" />
+          <Property Name="CanReserveTables" Type="bit" Nullable="false" />
+          <Property Name="AllowSmoking" Type="bit" Nullable="false" />
+          <Property Name="TimeToDelivery" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tax" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantBranch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="DistrictID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Address" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsMain" Type="bit" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantFood">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="FoodTypeID" Type="smallint" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Contents" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Calories" Type="int" />
+          <Property Name="Cost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumberOfPersons" Type="int" Nullable="false" />
+          <Property Name="Temperature" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TimeOfMeal" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMealException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantMealID" Type="int" Nullable="false" />
+          <Property Name="MealExceptionID" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMenu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="RestaurantBranchID" Type="int" />
+          <Property Name="TotalCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="DeliveryCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Tax" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OrderTime" Type="datetime" Nullable="false" />
+          <Property Name="DeliveryTime" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PaymentType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantOrderMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantOrderID" Type="int" Nullable="false" />
+          <Property Name="RestaurantMealID" Type="int" Nullable="false" />
+          <Property Name="RestaurantPromotionMealID" Type="int" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ForAllUsers" Type="bit" Nullable="false" />
+          <Property Name="Percentage" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantPromotionMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantPromotionID" Type="int" Nullable="false" />
+          <Property Name="RestaurantMealID" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="GuestCount" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantTime">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="Day" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OpenTime" Type="datetime" Nullable="false" />
+          <Property Name="CloseTime" Type="datetime" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserTypeID" Type="smallint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="FacebookAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="InstgramAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_UserException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="MealExceptionID" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_UserInterest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="FoodTypeID" Type="smallint" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_UserOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="RestaurantOrderID" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_UserRestaurant">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="RestaurantID" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="CreatorUserID" Type="int" Nullable="false" />
+          <Property Name="ModificationDate" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedUserID" Type="int" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_lkp_City_lkp_Country_CountryID">
+          <End Role="lkp_Country" Type="Self.lkp_Country" Multiplicity="1" />
+          <End Role="lkp_City" Type="Self.lkp_City" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_City">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_lkp_District_lkp_City_CityID">
+          <End Role="lkp_City" Type="Self.lkp_City" Multiplicity="1" />
+          <End Role="lkp_District" Type="Self.lkp_District" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_City">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_District">
+              <PropertyRef Name="CityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_lkp_SourceImage_lkp_SourceType_SourceTypeID">
+          <End Role="lkp_SourceType" Type="Self.lkp_SourceType" Multiplicity="1" />
+          <End Role="lkp_SourceImage" Type="Self.lkp_SourceImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_SourceType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_SourceImage">
+              <PropertyRef Name="SourceTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantBranch_lkp_District_DistrictID">
+          <End Role="lkp_District" Type="Self.lkp_District" Multiplicity="1" />
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_District">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantBranch">
+              <PropertyRef Name="DistrictID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantBranch">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID">
+          <End Role="lkp_FoodType" Type="Self.lkp_FoodType" Multiplicity="1" />
+          <End Role="tbl_RestaurantFood" Type="Self.tbl_RestaurantFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_FoodType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantFood">
+              <PropertyRef Name="FoodTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantFood" Type="Self.tbl_RestaurantFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantFood">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMeal">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID">
+          <End Role="lkp_MealException" Type="Self.lkp_MealException" Multiplicity="1" />
+          <End Role="tbl_RestaurantMealException" Type="Self.tbl_RestaurantMealException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_MealException">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMealException">
+              <PropertyRef Name="MealExceptionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantMealException" Type="Self.tbl_RestaurantMealException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMealException">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantMenu" Type="Self.tbl_RestaurantMenu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMenu">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrder">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID">
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="0..1" />
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantBranch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrder">
+              <PropertyRef Name="RestaurantBranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID">
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID">
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="0..1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantPromotionMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotion" Type="Self.tbl_RestaurantPromotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotion">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID">
+          <End Role="tbl_RestaurantPromotion" Type="Self.tbl_RestaurantPromotion" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantPromotion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="RestaurantPromotionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantTable" Type="Self.tbl_RestaurantTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantTime" Type="Self.tbl_RestaurantTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantTime">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_User_lkp_UserType_UserTypeID">
+          <End Role="lkp_UserType" Type="Self.lkp_UserType" Multiplicity="1" />
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_UserType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="UserTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserException_lkp_MealException_MealExceptionID">
+          <End Role="lkp_MealException" Type="Self.lkp_MealException" Multiplicity="1" />
+          <End Role="tbl_UserException" Type="Self.tbl_UserException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_MealException">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserException">
+              <PropertyRef Name="MealExceptionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserException_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserException" Type="Self.tbl_UserException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserException">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserInterest_lkp_FoodType_FoodTypeID">
+          <End Role="lkp_FoodType" Type="Self.lkp_FoodType" Multiplicity="1" />
+          <End Role="tbl_UserInterest" Type="Self.tbl_UserInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_FoodType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserInterest">
+              <PropertyRef Name="FoodTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserInterest_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserInterest" Type="Self.tbl_UserInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserInterest">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID">
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="1" />
+          <End Role="tbl_UserOrder" Type="Self.tbl_UserOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserOrder">
+              <PropertyRef Name="RestaurantOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserOrder_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserOrder" Type="Self.tbl_UserOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserOrder">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_UserRestaurant" Type="Self.tbl_UserRestaurant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserRestaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserRestaurant_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserRestaurant" Type="Self.tbl_UserRestaurant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserRestaurant">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PranzoModelStoreContainer">
+          <EntitySet Name="lkp_City" EntityType="Self.lkp_City" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_Country" EntityType="Self.lkp_Country" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_District" EntityType="Self.lkp_District" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_FoodType" EntityType="Self.lkp_FoodType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_MealException" EntityType="Self.lkp_MealException" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_SourceImage" EntityType="Self.lkp_SourceImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_SourceType" EntityType="Self.lkp_SourceType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="lkp_UserType" EntityType="Self.lkp_UserType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Restaurant" EntityType="Self.tbl_Restaurant" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantBranch" EntityType="Self.tbl_RestaurantBranch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantFood" EntityType="Self.tbl_RestaurantFood" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantMeal" EntityType="Self.tbl_RestaurantMeal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantMealException" EntityType="Self.tbl_RestaurantMealException" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantMenu" EntityType="Self.tbl_RestaurantMenu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantOrder" EntityType="Self.tbl_RestaurantOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantOrderMeal" EntityType="Self.tbl_RestaurantOrderMeal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantPromotion" EntityType="Self.tbl_RestaurantPromotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantPromotionMeal" EntityType="Self.tbl_RestaurantPromotionMeal" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantTable" EntityType="Self.tbl_RestaurantTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_RestaurantTime" EntityType="Self.tbl_RestaurantTime" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_User" EntityType="Self.tbl_User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_UserException" EntityType="Self.tbl_UserException" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_UserInterest" EntityType="Self.tbl_UserInterest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_UserOrder" EntityType="Self.tbl_UserOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_UserRestaurant" EntityType="Self.tbl_UserRestaurant" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_lkp_City_lkp_Country_CountryID" Association="Self.FK_lkp_City_lkp_Country_CountryID">
+            <End Role="lkp_Country" EntitySet="lkp_Country" />
+            <End Role="lkp_City" EntitySet="lkp_City" />
+          </AssociationSet>
+          <AssociationSet Name="FK_lkp_District_lkp_City_CityID" Association="Self.FK_lkp_District_lkp_City_CityID">
+            <End Role="lkp_City" EntitySet="lkp_City" />
+            <End Role="lkp_District" EntitySet="lkp_District" />
+          </AssociationSet>
+          <AssociationSet Name="FK_lkp_SourceImage_lkp_SourceType_SourceTypeID" Association="Self.FK_lkp_SourceImage_lkp_SourceType_SourceTypeID">
+            <End Role="lkp_SourceType" EntitySet="lkp_SourceType" />
+            <End Role="lkp_SourceImage" EntitySet="lkp_SourceImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantBranch_lkp_District_DistrictID" Association="Self.FK_tbl_RestaurantBranch_lkp_District_DistrictID">
+            <End Role="lkp_District" EntitySet="lkp_District" />
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID" Association="Self.FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID">
+            <End Role="lkp_FoodType" EntitySet="lkp_FoodType" />
+            <End Role="tbl_RestaurantFood" EntitySet="tbl_RestaurantFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantFood" EntitySet="tbl_RestaurantFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID" Association="Self.FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID">
+            <End Role="lkp_MealException" EntitySet="lkp_MealException" />
+            <End Role="tbl_RestaurantMealException" EntitySet="tbl_RestaurantMealException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantMealException" EntitySet="tbl_RestaurantMealException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantMenu" EntitySet="tbl_RestaurantMenu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID" Association="Self.FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID">
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID">
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID">
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantPromotion" EntitySet="tbl_RestaurantPromotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID" Association="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID">
+            <End Role="tbl_RestaurantPromotion" EntitySet="tbl_RestaurantPromotion" />
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantTable" EntitySet="tbl_RestaurantTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantTime" EntitySet="tbl_RestaurantTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_lkp_UserType_UserTypeID" Association="Self.FK_tbl_User_lkp_UserType_UserTypeID">
+            <End Role="lkp_UserType" EntitySet="lkp_UserType" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserException_lkp_MealException_MealExceptionID" Association="Self.FK_tbl_UserException_lkp_MealException_MealExceptionID">
+            <End Role="lkp_MealException" EntitySet="lkp_MealException" />
+            <End Role="tbl_UserException" EntitySet="tbl_UserException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserException_tbl_User_UserID" Association="Self.FK_tbl_UserException_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserException" EntitySet="tbl_UserException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserInterest_lkp_FoodType_FoodTypeID" Association="Self.FK_tbl_UserInterest_lkp_FoodType_FoodTypeID">
+            <End Role="lkp_FoodType" EntitySet="lkp_FoodType" />
+            <End Role="tbl_UserInterest" EntitySet="tbl_UserInterest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserInterest_tbl_User_UserID" Association="Self.FK_tbl_UserInterest_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserInterest" EntitySet="tbl_UserInterest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID" Association="Self.FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID">
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+            <End Role="tbl_UserOrder" EntitySet="tbl_UserOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserOrder_tbl_User_UserID" Association="Self.FK_tbl_UserOrder_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserOrder" EntitySet="tbl_UserOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_UserRestaurant" EntitySet="tbl_UserRestaurant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserRestaurant_tbl_User_UserID" Association="Self.FK_tbl_UserRestaurant_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserRestaurant" EntitySet="tbl_UserRestaurant" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PranzoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="lkp_City">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CountryID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_Country" Relationship="Self.FK_lkp_City_lkp_Country_CountryID" FromRole="lkp_City" ToRole="lkp_Country" />
+          <NavigationProperty Name="lkp_District" Relationship="Self.FK_lkp_District_lkp_City_CityID" FromRole="lkp_City" ToRole="lkp_District" />
+        </EntityType>
+        <EntityType Name="lkp_Country">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_City" Relationship="Self.FK_lkp_City_lkp_Country_CountryID" FromRole="lkp_Country" ToRole="lkp_City" />
+        </EntityType>
+        <EntityType Name="lkp_District">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CityID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_City" Relationship="Self.FK_lkp_District_lkp_City_CityID" FromRole="lkp_District" ToRole="lkp_City" />
+          <NavigationProperty Name="tbl_RestaurantBranch" Relationship="Self.FK_tbl_RestaurantBranch_lkp_District_DistrictID" FromRole="lkp_District" ToRole="tbl_RestaurantBranch" />
+        </EntityType>
+        <EntityType Name="lkp_FoodType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantFood" Relationship="Self.FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID" FromRole="lkp_FoodType" ToRole="tbl_RestaurantFood" />
+          <NavigationProperty Name="tbl_UserInterest" Relationship="Self.FK_tbl_UserInterest_lkp_FoodType_FoodTypeID" FromRole="lkp_FoodType" ToRole="tbl_UserInterest" />
+        </EntityType>
+        <EntityType Name="lkp_MealException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantMealException" Relationship="Self.FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID" FromRole="lkp_MealException" ToRole="tbl_RestaurantMealException" />
+          <NavigationProperty Name="tbl_UserException" Relationship="Self.FK_tbl_UserException_lkp_MealException_MealExceptionID" FromRole="lkp_MealException" ToRole="tbl_UserException" />
+        </EntityType>
+        <EntityType Name="lkp_SourceImage">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SourceID" Type="Int32" Nullable="false" />
+          <Property Name="SourceTypeID" Type="Int16" Nullable="false" />
+          <Property Name="ImagePath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_SourceType" Relationship="Self.FK_lkp_SourceImage_lkp_SourceType_SourceTypeID" FromRole="lkp_SourceImage" ToRole="lkp_SourceType" />
+        </EntityType>
+        <EntityType Name="lkp_SourceType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_SourceImage" Relationship="Self.FK_lkp_SourceImage_lkp_SourceType_SourceTypeID" FromRole="lkp_SourceType" ToRole="lkp_SourceImage" />
+        </EntityType>
+        <EntityType Name="lkp_UserType">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_User_lkp_UserType_UserTypeID" FromRole="lkp_UserType" ToRole="tbl_User" />
+        </EntityType>
+        <EntityType Name="tbl_Restaurant">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HotLine" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NumberOfTables" Type="Int32" Nullable="false" />
+          <Property Name="NumberOfStaff" Type="Int32" Nullable="false" />
+          <Property Name="CanReserveTables" Type="Boolean" Nullable="false" />
+          <Property Name="AllowSmoking" Type="Boolean" Nullable="false" />
+          <Property Name="TimeToDelivery" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tax" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantBranch" Relationship="Self.FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantBranch" />
+          <NavigationProperty Name="tbl_RestaurantFood" Relationship="Self.FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantFood" />
+          <NavigationProperty Name="tbl_RestaurantMeal" Relationship="Self.FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantMeal" />
+          <NavigationProperty Name="tbl_RestaurantMenu" Relationship="Self.FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantMenu" />
+          <NavigationProperty Name="tbl_RestaurantOrder" Relationship="Self.FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantOrder" />
+          <NavigationProperty Name="tbl_RestaurantPromotion" Relationship="Self.FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantPromotion" />
+          <NavigationProperty Name="tbl_RestaurantTable" Relationship="Self.FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantTable" />
+          <NavigationProperty Name="tbl_RestaurantTime" Relationship="Self.FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_RestaurantTime" />
+          <NavigationProperty Name="tbl_UserRestaurant" Relationship="Self.FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID" FromRole="tbl_Restaurant" ToRole="tbl_UserRestaurant" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantBranch">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="DistrictID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsMain" Type="Boolean" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_District" Relationship="Self.FK_tbl_RestaurantBranch_lkp_District_DistrictID" FromRole="tbl_RestaurantBranch" ToRole="lkp_District" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantBranch" ToRole="tbl_Restaurant" />
+          <NavigationProperty Name="tbl_RestaurantOrder" Relationship="Self.FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID" FromRole="tbl_RestaurantBranch" ToRole="tbl_RestaurantOrder" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantFood">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="FoodTypeID" Type="Int16" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_FoodType" Relationship="Self.FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID" FromRole="tbl_RestaurantFood" ToRole="lkp_FoodType" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantFood" ToRole="tbl_Restaurant" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Contents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Calories" Type="Int32" />
+          <Property Name="Cost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumberOfPersons" Type="Int32" Nullable="false" />
+          <Property Name="Temperature" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TimeOfMeal" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantMeal" ToRole="tbl_Restaurant" />
+          <NavigationProperty Name="tbl_RestaurantMealException" Relationship="Self.FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantMeal" ToRole="tbl_RestaurantMealException" />
+          <NavigationProperty Name="tbl_RestaurantOrderMeal" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantMeal" ToRole="tbl_RestaurantOrderMeal" />
+          <NavigationProperty Name="tbl_RestaurantPromotionMeal" Relationship="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantMeal" ToRole="tbl_RestaurantPromotionMeal" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMealException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantMealID" Type="Int32" Nullable="false" />
+          <Property Name="MealExceptionID" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_MealException" Relationship="Self.FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID" FromRole="tbl_RestaurantMealException" ToRole="lkp_MealException" />
+          <NavigationProperty Name="tbl_RestaurantMeal" Relationship="Self.FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantMealException" ToRole="tbl_RestaurantMeal" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantMenu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantMenu" ToRole="tbl_Restaurant" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantBranchID" Type="Int32" />
+          <Property Name="TotalCost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="DeliveryCost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Tax" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OrderTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DeliveryTime" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PaymentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantOrder" ToRole="tbl_Restaurant" />
+          <NavigationProperty Name="tbl_RestaurantBranch" Relationship="Self.FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID" FromRole="tbl_RestaurantOrder" ToRole="tbl_RestaurantBranch" />
+          <NavigationProperty Name="tbl_RestaurantOrderMeal" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID" FromRole="tbl_RestaurantOrder" ToRole="tbl_RestaurantOrderMeal" />
+          <NavigationProperty Name="tbl_UserOrder" Relationship="Self.FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID" FromRole="tbl_RestaurantOrder" ToRole="tbl_UserOrder" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantOrderMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantOrderID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantMealID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantPromotionMealID" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantMeal" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantOrderMeal" ToRole="tbl_RestaurantMeal" />
+          <NavigationProperty Name="tbl_RestaurantOrder" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID" FromRole="tbl_RestaurantOrderMeal" ToRole="tbl_RestaurantOrder" />
+          <NavigationProperty Name="tbl_RestaurantPromotionMeal" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID" FromRole="tbl_RestaurantOrderMeal" ToRole="tbl_RestaurantPromotionMeal" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantPromotion">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ForAllUsers" Type="Boolean" Nullable="false" />
+          <Property Name="Percentage" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantPromotion" ToRole="tbl_Restaurant" />
+          <NavigationProperty Name="tbl_RestaurantPromotionMeal" Relationship="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID" FromRole="tbl_RestaurantPromotion" ToRole="tbl_RestaurantPromotionMeal" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantPromotionMeal">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantPromotionID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantMealID" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantMeal" Relationship="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID" FromRole="tbl_RestaurantPromotionMeal" ToRole="tbl_RestaurantMeal" />
+          <NavigationProperty Name="tbl_RestaurantOrderMeal" Relationship="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID" FromRole="tbl_RestaurantPromotionMeal" ToRole="tbl_RestaurantOrderMeal" />
+          <NavigationProperty Name="tbl_RestaurantPromotion" Relationship="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID" FromRole="tbl_RestaurantPromotionMeal" ToRole="tbl_RestaurantPromotion" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantTable">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="GuestCount" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantTable" ToRole="tbl_Restaurant" />
+        </EntityType>
+        <EntityType Name="tbl_RestaurantTime">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="Day" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OpenTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CloseTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID" FromRole="tbl_RestaurantTime" ToRole="tbl_Restaurant" />
+        </EntityType>
+        <EntityType Name="tbl_User">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserTypeID" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FacebookAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InstgramAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_UserType" Relationship="Self.FK_tbl_User_lkp_UserType_UserTypeID" FromRole="tbl_User" ToRole="lkp_UserType" />
+          <NavigationProperty Name="tbl_UserException" Relationship="Self.FK_tbl_UserException_tbl_User_UserID" FromRole="tbl_User" ToRole="tbl_UserException" />
+          <NavigationProperty Name="tbl_UserInterest" Relationship="Self.FK_tbl_UserInterest_tbl_User_UserID" FromRole="tbl_User" ToRole="tbl_UserInterest" />
+          <NavigationProperty Name="tbl_UserOrder" Relationship="Self.FK_tbl_UserOrder_tbl_User_UserID" FromRole="tbl_User" ToRole="tbl_UserOrder" />
+          <NavigationProperty Name="tbl_UserRestaurant" Relationship="Self.FK_tbl_UserRestaurant_tbl_User_UserID" FromRole="tbl_User" ToRole="tbl_UserRestaurant" />
+        </EntityType>
+        <EntityType Name="tbl_UserException">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="MealExceptionID" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_MealException" Relationship="Self.FK_tbl_UserException_lkp_MealException_MealExceptionID" FromRole="tbl_UserException" ToRole="lkp_MealException" />
+          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_UserException_tbl_User_UserID" FromRole="tbl_UserException" ToRole="tbl_User" />
+        </EntityType>
+        <EntityType Name="tbl_UserInterest">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="FoodTypeID" Type="Int16" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="lkp_FoodType" Relationship="Self.FK_tbl_UserInterest_lkp_FoodType_FoodTypeID" FromRole="tbl_UserInterest" ToRole="lkp_FoodType" />
+          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_UserInterest_tbl_User_UserID" FromRole="tbl_UserInterest" ToRole="tbl_User" />
+        </EntityType>
+        <EntityType Name="tbl_UserOrder">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantOrderID" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_RestaurantOrder" Relationship="Self.FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID" FromRole="tbl_UserOrder" ToRole="tbl_RestaurantOrder" />
+          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_UserOrder_tbl_User_UserID" FromRole="tbl_UserOrder" ToRole="tbl_User" />
+        </EntityType>
+        <EntityType Name="tbl_UserRestaurant">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="RestaurantID" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatorUserID" Type="Int32" Nullable="false" />
+          <Property Name="ModificationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedUserID" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_Restaurant" Relationship="Self.FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID" FromRole="tbl_UserRestaurant" ToRole="tbl_Restaurant" />
+          <NavigationProperty Name="tbl_User" Relationship="Self.FK_tbl_UserRestaurant_tbl_User_UserID" FromRole="tbl_UserRestaurant" ToRole="tbl_User" />
+        </EntityType>
+        <Association Name="FK_lkp_City_lkp_Country_CountryID">
+          <End Role="lkp_Country" Type="Self.lkp_Country" Multiplicity="1" />
+          <End Role="lkp_City" Type="Self.lkp_City" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_Country">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_City">
+              <PropertyRef Name="CountryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_lkp_District_lkp_City_CityID">
+          <End Role="lkp_City" Type="Self.lkp_City" Multiplicity="1" />
+          <End Role="lkp_District" Type="Self.lkp_District" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_City">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_District">
+              <PropertyRef Name="CityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantBranch_lkp_District_DistrictID">
+          <End Role="lkp_District" Type="Self.lkp_District" Multiplicity="1" />
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_District">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantBranch">
+              <PropertyRef Name="DistrictID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID">
+          <End Role="lkp_FoodType" Type="Self.lkp_FoodType" Multiplicity="1" />
+          <End Role="tbl_RestaurantFood" Type="Self.tbl_RestaurantFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_FoodType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantFood">
+              <PropertyRef Name="FoodTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserInterest_lkp_FoodType_FoodTypeID">
+          <End Role="lkp_FoodType" Type="Self.lkp_FoodType" Multiplicity="1" />
+          <End Role="tbl_UserInterest" Type="Self.tbl_UserInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_FoodType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserInterest">
+              <PropertyRef Name="FoodTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID">
+          <End Role="lkp_MealException" Type="Self.lkp_MealException" Multiplicity="1" />
+          <End Role="tbl_RestaurantMealException" Type="Self.tbl_RestaurantMealException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_MealException">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMealException">
+              <PropertyRef Name="MealExceptionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserException_lkp_MealException_MealExceptionID">
+          <End Role="lkp_MealException" Type="Self.lkp_MealException" Multiplicity="1" />
+          <End Role="tbl_UserException" Type="Self.tbl_UserException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_MealException">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserException">
+              <PropertyRef Name="MealExceptionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_lkp_SourceImage_lkp_SourceType_SourceTypeID">
+          <End Role="lkp_SourceType" Type="Self.lkp_SourceType" Multiplicity="1" />
+          <End Role="lkp_SourceImage" Type="Self.lkp_SourceImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_SourceType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="lkp_SourceImage">
+              <PropertyRef Name="SourceTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_User_lkp_UserType_UserTypeID">
+          <End Role="lkp_UserType" Type="Self.lkp_UserType" Multiplicity="1" />
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="lkp_UserType">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_User">
+              <PropertyRef Name="UserTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantBranch">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantFood" Type="Self.tbl_RestaurantFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantFood">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMeal">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantMenu" Type="Self.tbl_RestaurantMenu" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMenu">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrder">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotion" Type="Self.tbl_RestaurantPromotion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotion">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantTable" Type="Self.tbl_RestaurantTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantTable">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_RestaurantTime" Type="Self.tbl_RestaurantTime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantTime">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID">
+          <End Role="tbl_Restaurant" Type="Self.tbl_Restaurant" Multiplicity="1" />
+          <End Role="tbl_UserRestaurant" Type="Self.tbl_UserRestaurant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_Restaurant">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserRestaurant">
+              <PropertyRef Name="RestaurantID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID">
+          <End Role="tbl_RestaurantBranch" Type="Self.tbl_RestaurantBranch" Multiplicity="0..1" />
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantBranch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrder">
+              <PropertyRef Name="RestaurantBranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantMealException" Type="Self.tbl_RestaurantMealException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantMealException">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID">
+          <End Role="tbl_RestaurantMeal" Type="Self.tbl_RestaurantMeal" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="RestaurantMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID">
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID">
+          <End Role="tbl_RestaurantOrder" Type="Self.tbl_RestaurantOrder" Multiplicity="1" />
+          <End Role="tbl_UserOrder" Type="Self.tbl_UserOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantOrder">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserOrder">
+              <PropertyRef Name="RestaurantOrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID">
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="0..1" />
+          <End Role="tbl_RestaurantOrderMeal" Type="Self.tbl_RestaurantOrderMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantOrderMeal">
+              <PropertyRef Name="RestaurantPromotionMealID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID">
+          <End Role="tbl_RestaurantPromotion" Type="Self.tbl_RestaurantPromotion" Multiplicity="1" />
+          <End Role="tbl_RestaurantPromotionMeal" Type="Self.tbl_RestaurantPromotionMeal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_RestaurantPromotion">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_RestaurantPromotionMeal">
+              <PropertyRef Name="RestaurantPromotionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserException_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserException" Type="Self.tbl_UserException" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserException">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserInterest_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserInterest" Type="Self.tbl_UserInterest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserInterest">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserOrder_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserOrder" Type="Self.tbl_UserOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserOrder">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_UserRestaurant_tbl_User_UserID">
+          <End Role="tbl_User" Type="Self.tbl_User" Multiplicity="1" />
+          <End Role="tbl_UserRestaurant" Type="Self.tbl_UserRestaurant" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_User">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="tbl_UserRestaurant">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PranzoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="lkp_City" EntityType="Self.lkp_City" />
+          <EntitySet Name="lkp_Country" EntityType="Self.lkp_Country" />
+          <EntitySet Name="lkp_District" EntityType="Self.lkp_District" />
+          <EntitySet Name="lkp_FoodType" EntityType="Self.lkp_FoodType" />
+          <EntitySet Name="lkp_MealException" EntityType="Self.lkp_MealException" />
+          <EntitySet Name="lkp_SourceImage" EntityType="Self.lkp_SourceImage" />
+          <EntitySet Name="lkp_SourceType" EntityType="Self.lkp_SourceType" />
+          <EntitySet Name="lkp_UserType" EntityType="Self.lkp_UserType" />
+          <EntitySet Name="tbl_Restaurant" EntityType="Self.tbl_Restaurant" />
+          <EntitySet Name="tbl_RestaurantBranch" EntityType="Self.tbl_RestaurantBranch" />
+          <EntitySet Name="tbl_RestaurantFood" EntityType="Self.tbl_RestaurantFood" />
+          <EntitySet Name="tbl_RestaurantMeal" EntityType="Self.tbl_RestaurantMeal" />
+          <EntitySet Name="tbl_RestaurantMealException" EntityType="Self.tbl_RestaurantMealException" />
+          <EntitySet Name="tbl_RestaurantMenu" EntityType="Self.tbl_RestaurantMenu" />
+          <EntitySet Name="tbl_RestaurantOrder" EntityType="Self.tbl_RestaurantOrder" />
+          <EntitySet Name="tbl_RestaurantOrderMeal" EntityType="Self.tbl_RestaurantOrderMeal" />
+          <EntitySet Name="tbl_RestaurantPromotion" EntityType="Self.tbl_RestaurantPromotion" />
+          <EntitySet Name="tbl_RestaurantPromotionMeal" EntityType="Self.tbl_RestaurantPromotionMeal" />
+          <EntitySet Name="tbl_RestaurantTable" EntityType="Self.tbl_RestaurantTable" />
+          <EntitySet Name="tbl_RestaurantTime" EntityType="Self.tbl_RestaurantTime" />
+          <EntitySet Name="tbl_User" EntityType="Self.tbl_User" />
+          <EntitySet Name="tbl_UserException" EntityType="Self.tbl_UserException" />
+          <EntitySet Name="tbl_UserInterest" EntityType="Self.tbl_UserInterest" />
+          <EntitySet Name="tbl_UserOrder" EntityType="Self.tbl_UserOrder" />
+          <EntitySet Name="tbl_UserRestaurant" EntityType="Self.tbl_UserRestaurant" />
+          <AssociationSet Name="FK_lkp_City_lkp_Country_CountryID" Association="Self.FK_lkp_City_lkp_Country_CountryID">
+            <End Role="lkp_Country" EntitySet="lkp_Country" />
+            <End Role="lkp_City" EntitySet="lkp_City" />
+          </AssociationSet>
+          <AssociationSet Name="FK_lkp_District_lkp_City_CityID" Association="Self.FK_lkp_District_lkp_City_CityID">
+            <End Role="lkp_City" EntitySet="lkp_City" />
+            <End Role="lkp_District" EntitySet="lkp_District" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantBranch_lkp_District_DistrictID" Association="Self.FK_tbl_RestaurantBranch_lkp_District_DistrictID">
+            <End Role="lkp_District" EntitySet="lkp_District" />
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID" Association="Self.FK_tbl_RestaurantFood_lkp_FoodType_FoodTypeID">
+            <End Role="lkp_FoodType" EntitySet="lkp_FoodType" />
+            <End Role="tbl_RestaurantFood" EntitySet="tbl_RestaurantFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserInterest_lkp_FoodType_FoodTypeID" Association="Self.FK_tbl_UserInterest_lkp_FoodType_FoodTypeID">
+            <End Role="lkp_FoodType" EntitySet="lkp_FoodType" />
+            <End Role="tbl_UserInterest" EntitySet="tbl_UserInterest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID" Association="Self.FK_tbl_RestaurantMealException_lkp_MealException_MealExceptionID">
+            <End Role="lkp_MealException" EntitySet="lkp_MealException" />
+            <End Role="tbl_RestaurantMealException" EntitySet="tbl_RestaurantMealException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserException_lkp_MealException_MealExceptionID" Association="Self.FK_tbl_UserException_lkp_MealException_MealExceptionID">
+            <End Role="lkp_MealException" EntitySet="lkp_MealException" />
+            <End Role="tbl_UserException" EntitySet="tbl_UserException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_lkp_SourceImage_lkp_SourceType_SourceTypeID" Association="Self.FK_lkp_SourceImage_lkp_SourceType_SourceTypeID">
+            <End Role="lkp_SourceType" EntitySet="lkp_SourceType" />
+            <End Role="lkp_SourceImage" EntitySet="lkp_SourceImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_User_lkp_UserType_UserTypeID" Association="Self.FK_tbl_User_lkp_UserType_UserTypeID">
+            <End Role="lkp_UserType" EntitySet="lkp_UserType" />
+            <End Role="tbl_User" EntitySet="tbl_User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantBranch_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantFood_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantFood" EntitySet="tbl_RestaurantFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantMeal_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantMenu_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantMenu" EntitySet="tbl_RestaurantMenu" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantOrder_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantPromotion_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantPromotion" EntitySet="tbl_RestaurantPromotion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantTable_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantTable" EntitySet="tbl_RestaurantTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_RestaurantTime_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_RestaurantTime" EntitySet="tbl_RestaurantTime" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID" Association="Self.FK_tbl_UserRestaurant_tbl_Restaurant_RestaurantID">
+            <End Role="tbl_Restaurant" EntitySet="tbl_Restaurant" />
+            <End Role="tbl_UserRestaurant" EntitySet="tbl_UserRestaurant" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID" Association="Self.FK_tbl_RestaurantOrder_tbl_RestaurantBranch_RestaurantBranchID">
+            <End Role="tbl_RestaurantBranch" EntitySet="tbl_RestaurantBranch" />
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantMealException_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantMealException" EntitySet="tbl_RestaurantMealException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID" Association="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantMeal_RestaurantMealID">
+            <End Role="tbl_RestaurantMeal" EntitySet="tbl_RestaurantMeal" />
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantOrder_RestaurantOrderID">
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID" Association="Self.FK_tbl_UserOrder_tbl_RestaurantOrder_RestaurantOrderID">
+            <End Role="tbl_RestaurantOrder" EntitySet="tbl_RestaurantOrder" />
+            <End Role="tbl_UserOrder" EntitySet="tbl_UserOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID" Association="Self.FK_tbl_RestaurantOrderMeal_tbl_RestaurantPromotionMeal_RestaurantPromotionMealID">
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+            <End Role="tbl_RestaurantOrderMeal" EntitySet="tbl_RestaurantOrderMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID" Association="Self.FK_tbl_RestaurantPromotionMeal_tbl_RestaurantPromotion_RestaurantPromotionID">
+            <End Role="tbl_RestaurantPromotion" EntitySet="tbl_RestaurantPromotion" />
+            <End Role="tbl_RestaurantPromotionMeal" EntitySet="tbl_RestaurantPromotionMeal" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserException_tbl_User_UserID" Association="Self.FK_tbl_UserException_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserException" EntitySet="tbl_UserException" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserInterest_tbl_User_UserID" Association="Self.FK_tbl_UserInterest_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserInterest" EntitySet="tbl_UserInterest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserOrder_tbl_User_UserID" Association="Self.FK_tbl_UserOrder_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserOrder" EntitySet="tbl_UserOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_UserRestaurant_tbl_User_UserID" Association="Self.FK_tbl_UserRestaurant_tbl_User_UserID">
+            <End Role="tbl_User" EntitySet="tbl_User" />
+            <End Role="tbl_UserRestaurant" EntitySet="tbl_UserRestaurant" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PranzoModelStoreContainer" CdmEntityContainer="PranzoEntities">
+          <EntitySetMapping Name="lkp_City">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_City">
+              <MappingFragment StoreEntitySet="lkp_City">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CountryID" ColumnName="CountryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_Country">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_Country">
+              <MappingFragment StoreEntitySet="lkp_Country">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_District">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_District">
+              <MappingFragment StoreEntitySet="lkp_District">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CityID" ColumnName="CityID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_FoodType">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_FoodType">
+              <MappingFragment StoreEntitySet="lkp_FoodType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_MealException">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_MealException">
+              <MappingFragment StoreEntitySet="lkp_MealException">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_SourceImage">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_SourceImage">
+              <MappingFragment StoreEntitySet="lkp_SourceImage">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="SourceID" ColumnName="SourceID" />
+                <ScalarProperty Name="SourceTypeID" ColumnName="SourceTypeID" />
+                <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_SourceType">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_SourceType">
+              <MappingFragment StoreEntitySet="lkp_SourceType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="lkp_UserType">
+            <EntityTypeMapping TypeName="PranzoModel.lkp_UserType">
+              <MappingFragment StoreEntitySet="lkp_UserType">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Restaurant">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_Restaurant">
+              <MappingFragment StoreEntitySet="tbl_Restaurant">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="HotLine" ColumnName="HotLine" />
+                <ScalarProperty Name="NumberOfTables" ColumnName="NumberOfTables" />
+                <ScalarProperty Name="NumberOfStaff" ColumnName="NumberOfStaff" />
+                <ScalarProperty Name="CanReserveTables" ColumnName="CanReserveTables" />
+                <ScalarProperty Name="AllowSmoking" ColumnName="AllowSmoking" />
+                <ScalarProperty Name="TimeToDelivery" ColumnName="TimeToDelivery" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantBranch">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantBranch">
+              <MappingFragment StoreEntitySet="tbl_RestaurantBranch">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="DistrictID" ColumnName="DistrictID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="IsMain" ColumnName="IsMain" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantFood">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantFood">
+              <MappingFragment StoreEntitySet="tbl_RestaurantFood">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="FoodTypeID" ColumnName="FoodTypeID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantMeal">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantMeal">
+              <MappingFragment StoreEntitySet="tbl_RestaurantMeal">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Contents" ColumnName="Contents" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="NumberOfPersons" ColumnName="NumberOfPersons" />
+                <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+                <ScalarProperty Name="TimeOfMeal" ColumnName="TimeOfMeal" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantMealException">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantMealException">
+              <MappingFragment StoreEntitySet="tbl_RestaurantMealException">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantMealID" ColumnName="RestaurantMealID" />
+                <ScalarProperty Name="MealExceptionID" ColumnName="MealExceptionID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantMenu">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantMenu">
+              <MappingFragment StoreEntitySet="tbl_RestaurantMenu">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantOrder">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantOrder">
+              <MappingFragment StoreEntitySet="tbl_RestaurantOrder">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="RestaurantBranchID" ColumnName="RestaurantBranchID" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="DeliveryCost" ColumnName="DeliveryCost" />
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="OrderTime" ColumnName="OrderTime" />
+                <ScalarProperty Name="DeliveryTime" ColumnName="DeliveryTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantOrderMeal">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantOrderMeal">
+              <MappingFragment StoreEntitySet="tbl_RestaurantOrderMeal">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantOrderID" ColumnName="RestaurantOrderID" />
+                <ScalarProperty Name="RestaurantMealID" ColumnName="RestaurantMealID" />
+                <ScalarProperty Name="RestaurantPromotionMealID" ColumnName="RestaurantPromotionMealID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantPromotion">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantPromotion">
+              <MappingFragment StoreEntitySet="tbl_RestaurantPromotion">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ForAllUsers" ColumnName="ForAllUsers" />
+                <ScalarProperty Name="Percentage" ColumnName="Percentage" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantPromotionMeal">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantPromotionMeal">
+              <MappingFragment StoreEntitySet="tbl_RestaurantPromotionMeal">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantPromotionID" ColumnName="RestaurantPromotionID" />
+                <ScalarProperty Name="RestaurantMealID" ColumnName="RestaurantMealID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantTable">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantTable">
+              <MappingFragment StoreEntitySet="tbl_RestaurantTable">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="GuestCount" ColumnName="GuestCount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_RestaurantTime">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_RestaurantTime">
+              <MappingFragment StoreEntitySet="tbl_RestaurantTime">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="Day" ColumnName="Day" />
+                <ScalarProperty Name="OpenTime" ColumnName="OpenTime" />
+                <ScalarProperty Name="CloseTime" ColumnName="CloseTime" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_User">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_User">
+              <MappingFragment StoreEntitySet="tbl_User">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FacebookAccount" ColumnName="FacebookAccount" />
+                <ScalarProperty Name="InstgramAccount" ColumnName="InstgramAccount" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_UserException">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_UserException">
+              <MappingFragment StoreEntitySet="tbl_UserException">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="MealExceptionID" ColumnName="MealExceptionID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_UserInterest">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_UserInterest">
+              <MappingFragment StoreEntitySet="tbl_UserInterest">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="FoodTypeID" ColumnName="FoodTypeID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_UserOrder">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_UserOrder">
+              <MappingFragment StoreEntitySet="tbl_UserOrder">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="RestaurantOrderID" ColumnName="RestaurantOrderID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_UserRestaurant">
+            <EntityTypeMapping TypeName="PranzoModel.tbl_UserRestaurant">
+              <MappingFragment StoreEntitySet="tbl_UserRestaurant">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="RestaurantID" ColumnName="RestaurantID" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="CreatorUserID" ColumnName="CreatorUserID" />
+                <ScalarProperty Name="ModificationDate" ColumnName="ModificationDate" />
+                <ScalarProperty Name="ModifiedUserID" ColumnName="ModifiedUserID" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

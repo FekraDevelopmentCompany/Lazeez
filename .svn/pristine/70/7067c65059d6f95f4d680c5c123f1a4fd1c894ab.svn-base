@@ -1,0 +1,105 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+
+namespace Pranzo.Service.Service
+{
+    public class SourceImageService : BaseService<lkp_SourceImage, SourceImage>
+    {
+        public SourceImageService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<lkp_SourceImage>();
+        }
+
+        #region BaseService Operations
+
+        #endregion
+
+        #region Business Operations
+
+        public void Insert(int sourceId, Enums.SourceType sourceType)
+        {
+            // Save uploaded files
+            var directoryPath = Upload.GetFullPath(sourceId, sourceType);
+            var directoryTempPath = Upload.GetTempFullPath();
+            var directoryTemp = new DirectoryInfo(directoryTempPath);
+            var files = directoryTemp.GetFiles();
+
+            foreach (var file in files)
+            {
+                var sourceImage = new SourceImage
+                {
+                    SourceID = sourceId,
+                    SourceTypeID = (short)sourceType,
+                    ImagePath = file.Name
+                };
+
+                // Save in table SourceImage
+                base.Insert(sourceImage);
+                unitOfWork.Save();
+
+                // Copy file from temp folder to original folder
+                var path = Path.Combine(directoryPath, file.Name);
+                file.CopyTo(path, true);
+            }
+
+            // Delete temp folder
+            directoryTemp.Delete(true);
+        }
+
+        public void Delete(int id, int sourceId, Enums.SourceType sourceType)
+        {
+            // Delete file from original folder
+            var path = GetImagePath(id, sourceId, sourceType);
+            File.Delete(path);
+
+            // Delete from table SourceImage
+            base.Delete(id);
+            unitOfWork.Save();
+        }
+
+        public string GetImagePath(int id, int sourceId, Enums.SourceType sourceType)
+        {
+            var directoryPath = Upload.GetFullPath(sourceId, sourceType);
+            return repository.Table
+                             .Where(s => s.ID == id)
+                             .Select(c => directoryPath + "/" + c.ImagePath)
+                             .FirstOrDefault();
+        }
+
+        //public List<string> GetImagePath(int sourceId, Enums.SourceType sourceType)
+        //{
+        //    var directoryPath = Upload.GetAbsolutePath(sourceId, sourceType);
+        //    return repository.Table
+        //                     .Where(s => s.SourceID == sourceId && s.SourceTypeID == (short)sourceType)
+        //                     .Select(c => directoryPath + "/" + c.ImagePath)
+        //                     .ToList();
+        //}
+
+        public List<SourceImageModel> GetImagePreview(int sourceId, Enums.SourceType sourceType)
+        {
+            var directoryAbsolutePath = Upload.GetAbsolutePath(sourceId, sourceType);
+            var directoryFullPath = Upload.GetFullPath(sourceId, sourceType);
+            var sourceImages = GetAll(s => s.SourceID == sourceId && s.SourceTypeID == (short)sourceType);
+
+            return (from s in sourceImages
+                    let fileInfo = new FileInfo(directoryFullPath + "/" + s.ImagePath)
+                    select new SourceImageModel
+                    {
+                        ID = s.ID,  
+                        Url = directoryAbsolutePath + "/" + s.ImagePath,
+                        Caption = fileInfo.Name,
+                        Size = fileInfo.Length
+                    }).ToList();
+        }
+
+        #endregion
+    }
+}

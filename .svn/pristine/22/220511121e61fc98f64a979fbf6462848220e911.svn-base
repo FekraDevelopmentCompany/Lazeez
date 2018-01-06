@@ -1,0 +1,133 @@
+﻿using System;
+using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantMealService : BaseService<tbl_RestaurantMeal, RestaurantMeal>
+    {
+        public RestaurantMealService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_RestaurantMeal>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Source Image
+            var sourceImageService = unitOfWork.Service<SourceImageService>();
+            sourceImageService.Delete(s => s.SourceID == id && s.SourceTypeID == (short)Enums.SourceType.RestaurantMeal);
+
+            // Delete Restaurant MealException
+            var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+            restaurantMealExceptionService.Delete(m => m.RestaurantMealID == id);
+
+            // Delete Restaurant Meal
+            base.Delete(id);
+        }
+
+        public override void Delete(Expression<Func<RestaurantMeal, bool>> whereCondition)
+        {
+            var sourceImageService = unitOfWork.Service<SourceImageService>();
+            var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+            var restaurantMeal = GetAll(whereCondition);
+            int id;
+
+            for (int i = 0; i < restaurantMeal.Count; i++)
+            {
+                id = restaurantMeal[i].ID;
+
+                // Delete Source Image
+                sourceImageService.Delete(s => s.SourceID == id && s.SourceTypeID == (short)Enums.SourceType.RestaurantMeal);
+
+                // Delete Restaurant MealException
+                restaurantMealExceptionService.Delete(m => m.RestaurantMealID == id);
+            }
+
+            // Delete Restaurant Meal
+            base.Delete(whereCondition);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantMealSearch> Search(RestaurantMealSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+            var ignoreRestaurantMenu = !prms.RestaurantMenuID.HasValue;
+            var ignoreMealException = !prms.RestaurantMealExceptionID.HasValue;
+            var mealExceptionFilteration = new List<int>();
+
+            // Declare Repository
+            var restaurantMenuRepositry = unitOfWork.Repository<tbl_RestaurantMenu>();
+
+            if (!ignoreMealException)
+            {
+                mealExceptionFilteration = unitOfWork.Repository<tbl_RestaurantMealException>().Table
+                                          .Where(x => x.MealExceptionID == prms.RestaurantMealExceptionID)
+                                          .Select(y => y.RestaurantMealID).ToList();
+            }
+
+            var restaurantMeals = (from restMeal in repository.Table
+                                   join restMenu in restaurantMenuRepositry.Table on restMeal.RestaurantMenuID equals restMenu.ID
+                                   where restMeal.IsDeleted == false
+                                      && restMeal.RestaurantID == prms.RestaurantID
+                                      && (ignoreName || restMeal.Name.Contains(prms.Name))
+                                      && (ignoreRestaurantMenu || restMeal.RestaurantMenuID == prms.RestaurantMenuID.Value)
+                                      && (ignoreMealException || mealExceptionFilteration.Contains(restMeal.ID))
+                                   select new RestaurantMealSearch
+                                   {
+                                       ID = restMeal.ID,
+                                       Name = restMeal.Name,
+                                       RestaurantMenu = restMenu.Name,
+                                       Calories = restMeal.Calories,
+                                       Cost = restMeal.Cost,
+                                       NumberOfPerson = restMeal.NumberOfPersons,
+                                       Temperature = restMeal.Temperature,
+                                       TimeOfMeal = restMeal.TimeOfMeal
+                                   })
+                                    .OrderBy(prms.OrderBy)
+                                    .ToList();
+
+            return new JQueryDataTables<RestaurantMealSearch>
+            {
+                iTotalRecords = restaurantMeals.Count,
+                iTotalDisplayRecords = restaurantMeals.Count,
+                aaData = restaurantMeals.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        public decimal GetCostWithPromotion(int id)
+        {
+            // Declare Repository
+            var restaurantPromotionRepositry = unitOfWork.Repository<tbl_RestaurantPromotion>();
+            var restaurantPromotionMealRepositry = unitOfWork.Repository<tbl_RestaurantPromotionMeal>();
+            var currentDate = DateTime.Now.Date;
+
+            return (from restMeal in repository.Table
+
+                    join restProMeal in restaurantPromotionMealRepositry.Table on restMeal.ID equals restProMeal.RestaurantMealID into restProMealTemp
+                    from restProMeal in restProMealTemp.DefaultIfEmpty()
+
+                    join restPro in restaurantPromotionRepositry.Table on restProMeal.RestaurantPromotionID equals restPro.ID into restProTemp
+                    from restPro in restProTemp.Where(restPro => restPro.StartDate >= currentDate && restPro.EndDate <= currentDate).DefaultIfEmpty()
+
+                    where restMeal.IsDeleted == false && restMeal.ID == id
+                    select restMeal.Cost - (restMeal.Cost * ((decimal?)restPro.Percentage ?? 0) / 100))
+                    .FirstOrDefault();
+        }
+
+        #endregion
+    }
+}

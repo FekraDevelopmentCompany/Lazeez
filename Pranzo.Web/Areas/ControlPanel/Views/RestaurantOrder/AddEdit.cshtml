@@ -1,0 +1,83 @@
+﻿@model RestaurantOrderModel
+@using Lazeez.Model.ViewModel
+@using Lazeez.Resource.ControlPanel
+
+@using (Ajax.BeginForm("Save", "RestaurantOrder", new { area = "ControlPanel" },
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+        new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantOrderVM.ID)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.RestaurantBranchID)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.OrderTime)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.DeliveryTime)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.Status)
+    @Html.HiddenFor(model => model.RestaurantOrderVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantOrder.RestaurantOrders</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantOrder.BranchName<span class="required"> *</span></label>
+                    <div class="col-sm-10 col-md-10 col-lg-10 xs-10">
+                        @Html.EditorFor(model => model.RestaurantBranchName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">@RestaurantOrder.DeliveryCost<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.RestaurantOrderVM.DeliveryCost, new { @class = "form-control", @placeholder = @RestaurantOrder.DeliveryCost })
+                        @Html.ValidationMessageFor(model => model.RestaurantOrderVM.DeliveryCost)
+                    </div>
+                    <label class="col-md-2 control-label">@RestaurantOrder.Tax<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantOrderVM.Tax, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantOrder.Tax } })
+                        @Html.ValidationMessageFor(model => model.RestaurantOrderVM.Tax)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantOrder.PaymentType<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantOrderVM.PaymentType, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantOrder.PaymentType } })
+                        @Html.ValidationMessageFor(model => model.RestaurantOrderVM.PaymentType)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+    <h4>@RestaurantOrder.Meals</h4>
+    <div class="row">
+        <div class="col-lg-12">
+            <br />
+            @Html.ListBoxFor(model => model.SelectedOrderMeals, Model.ListOrderMeals, new { @id = "lstOrderMeal", @class = "form-control", multiple = "multiple" })
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            @Html.Partial("Buttons/_Save")
+            @Html.Partial("Buttons/_CancelAddEdit")
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script>
+        var $dualListbox = $("#lstOrderMeal");
+        $(document).ready(function () {
+
+            $dualListbox.bootstrapDualListbox({
+                preserveSelectionOnMove: 'moved',
+                moveOnSelect: false
+            });
+        });
+
+    </script>
+}

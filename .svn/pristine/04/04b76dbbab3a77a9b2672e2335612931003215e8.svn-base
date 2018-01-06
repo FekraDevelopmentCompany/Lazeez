@@ -1,0 +1,63 @@
+﻿using System.Net;
+using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Web.Helpers.Filters
+{
+    public class ErrorHandlerAttribute : HandleErrorAttribute
+    {
+        private bool IsAjax(ExceptionContext filterContext)
+        {
+            return filterContext.HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
+
+        public override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled || !filterContext.HttpContext.IsCustomErrorEnabled)
+            {
+                return;
+            }
+
+            if (!ExceptionType.IsInstanceOfType(filterContext.Exception))
+            {
+                return;
+            }
+            
+            // if the request is AJAX return JSON else view.
+            if (IsAjax(filterContext))
+            {
+                filterContext.Result = new PartialViewResult
+                {
+                    ViewName = "Dialogs/_Message",
+                    ViewData = new ViewDataDictionary(new MessageDialog
+                    {
+                        Title = Resources.Res_Error,
+                        Message = filterContext.Exception.GetBaseException().Message,
+                        Type = MessageDialog.ButtonType.Error
+                    })
+                };
+
+                filterContext.ExceptionHandled = true;
+                filterContext.HttpContext.Response.Clear();
+                filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError; // Code (500) To Excute OnFailure
+            }
+            else
+            {
+                var controllerName = (string)filterContext.RouteData.Values["controller"];
+                var actionName = (string)filterContext.RouteData.Values["action"];
+                var model = new HandleErrorInfo(filterContext.Exception, controllerName, actionName);
+
+                filterContext.Result = new ViewResult
+                {
+                    ViewName = "Pages/Error",
+                    ViewData = new ViewDataDictionary<HandleErrorInfo>(model)
+                };
+
+                filterContext.ExceptionHandled = true;
+                filterContext.HttpContext.Response.Clear();
+                filterContext.HttpContext.Response.TrySkipIisCustomErrors = true;
+            }
+        }
+    }
+}

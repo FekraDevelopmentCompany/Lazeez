@@ -1,0 +1,15 @@
+﻿@using Pranzo.Resource.Shared
+@model HandleErrorInfo
+
+@{
+    ViewBag.Title = Resources.Res_Error;
+}
+
+<hgroup class="title">
+    <h1 class="error">@Resources.Res_Error</h1>
+    <h2 class="error">@Messages.Msg_Error</h2>
+</hgroup>
+<div>
+    <p>@Model.Exception.Message</p>
+    <p>@Model.Exception.StackTrace</p>
+</div>

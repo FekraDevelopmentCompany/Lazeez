@@ -1,0 +1,37 @@
+﻿using System;
+using Pranzo.Model.Infrastructure;
+using System.ComponentModel.DataAnnotations;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Model.DBModel
+{
+    public class RestaurantOrder : BaseEntity
+    {
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int RestaurantID { get; set; }
+
+        public int? RestaurantBranchID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public decimal TotalCost { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public decimal DeliveryCost { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public decimal Tax { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public DateTime OrderTime { get; set; }
+
+        public DateTime? DeliveryTime { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int Status { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string PaymentType { get; set; }
+    }
+}

@@ -1,0 +1,31 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Pranzo.Model.DBModel;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Model.ViewModel
+{
+    public class UserModel
+    {
+        public string Header { get; set; }
+
+        private User _userVm;
+        public User UserVM
+        {
+            get { return _userVm; }
+            set
+            {
+                _userVm = value;
+                Header = _userVm.ID > 0 ? Resources.Res_Edit : Resources.Res_Add;
+            }
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Password { get; set; }
+    }
+}

@@ -1,0 +1,74 @@
+﻿var fileInput;
+var uploadComplete = false;
+
+$(document).ready(function () {
+
+    initializeImagePreview();
+});
+
+function initializeFileInput(files, filesConfig) {
+    fileInput = $("#txtFileUpload").fileinput({
+        uploadUrl: links.uploadImage,
+        uploadAsync: true,
+        //showUpload: false,
+        allowedFileExtensions: ["jpg", "png", "gif"],
+        maxFileCount: 5,
+        maxFileSize: 2000,
+        overwriteInitial: false,
+        validateInitialCount: true,
+        initialPreview: files,
+        initialPreviewConfig: filesConfig
+    });
+}
+
+function initializeImagePreview() {
+
+    var files = [];
+    var filesConfig = [];
+
+    $.ajax({
+        type: "GET",
+        url: links.getImagePreview,
+        data: { id: $("#RestaurantMenuVM_ID").val() },
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            var deleteUrl = links.deleteUploadImage;
+
+            $.each(data, function (index, item) {
+                files.push("<img src=" + item.Url + " class='kv-preview-data krajee-init-preview file-preview-image' />");
+                filesConfig.push({ 'caption': item.Caption, 'size': item.Size, 'url': deleteUrl, 'key': item.ID });
+            });
+
+            initializeFileInput(files, filesConfig);
+        }
+    });
+}
+
+function checkFileUploadComplete() {
+
+    // create a deferred object
+    var deferred = $.Deferred();
+
+    fileInput.on("filebatchuploadcomplete", function () {
+        deferred.resolve();
+    });
+
+    // return the deferred object
+    return deferred.promise();
+}
+
+function OnBegin() {
+
+    if (uploadComplete) return true;
+
+    fileInput.fileinput("upload");
+
+    var form = $(this).closest("form");
+    checkFileUploadComplete().done(function () {
+        uploadComplete = true;
+        form.trigger("submit");
+    });
+
+    return false;
+}

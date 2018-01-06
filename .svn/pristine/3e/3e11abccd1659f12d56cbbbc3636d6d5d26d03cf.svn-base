@@ -1,0 +1,41 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Pranzo.Model.Infrastructure;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Model.DBModel
+{
+    public class User : BaseEntity
+    {
+        public int ID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public int UserTypeID { get; set; }
+
+        public int? UserParentID { get; set; }
+        public int? RestaurantBranchID { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        [StringLength(250, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Password { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string FacebookAccount { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string InstgramAccount { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        [EmailAddress(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_Email")]
+        public string Email { get; set; }
+
+        [StringLength(50, ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_MaximumLength")]
+        public string Phone { get; set; }
+
+        public int NumberOfRestaurant { get; set; }
+        public string DeviceToken { get; set; }
+    }
+}

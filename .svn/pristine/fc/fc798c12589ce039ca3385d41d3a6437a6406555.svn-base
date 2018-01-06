@@ -1,0 +1,51 @@
+﻿using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Resource.Shared;
+
+namespace Pranzo.Model.ViewModel
+{
+    public class RestaurantModel
+    {
+        public string Header { get; set; }
+
+        private Restaurant _RestaurantVM;
+        public Restaurant RestaurantVM
+        {
+            get { return _RestaurantVM; }
+            set
+            {
+                _RestaurantVM = value;
+                Header = _RestaurantVM.ID > 0 ? Resources.Res_Edit : Resources.Res_Add;
+            }
+        }
+    }
+
+    public class RestaurantSearch
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Mobile { get; set; }
+        public string Phone { get; set; }
+        public string HotLine { get; set; }
+        public int NumberOfTables { get; set; }
+        public int NumberOfStaff { get; set; }
+        public bool CanReserveTables { get; set; }
+        public bool AllowSmoking { get; set; }
+        public string TimeToDelivery { get; set; }
+        public decimal Tax { get; set; }
+    }
+
+    public class RestaurantSearchParams : JQueryDataTablesModel
+    {
+        public string Name { get; set; }
+        public string Mobile { get; set; }
+        public string Phone { get; set; }
+        public string HotLine { get; set; }
+        public int NumberOfTables { get; set; }
+        public int NumberOfStaff { get; set; }
+        public bool CanReserveTables { get; set; }
+        public bool AllowSmoking { get; set; }
+        public string TimeToDelivery { get; set; }
+        public decimal Tax { get; set; }
+    }
+}

@@ -1,0 +1,86 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Helper;
+using System.Linq;
+
+namespace Pranzo.Service.Service
+{
+    public class UserService : BaseService<tbl_User, User>
+    {
+        public UserService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_User>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+
+        public bool IsValidUser(string name, string password)
+        {
+            password = StringCipher.Hash(password);
+            var user = repository.Table
+                             .Where(u => u.IsDeleted == false && u.Name.ToLower() == name.ToLower() && u.Password == password)
+                             .Select(u => new User
+                             {
+                                 ID = u.ID,
+                                 Name = u.Name,
+                                 UserTypeID = u.UserTypeID,
+                                 RestaurantBranchID = u.RestaurantBranchID,
+                                 NumberOfRestaurant = u.NumberOfRestaurant
+                             })
+                            .SingleOrDefault();
+
+            if (user == null) return false;
+
+            GlobalSettings.CurrentUserID = user.ID;
+            GlobalSettings.CurrentUserName = user.Name;
+            GlobalSettings.CurrentUserTypeID = (Enums.UserType)user.UserTypeID;
+
+            return true;
+        }
+
+        public bool SignUp(User Model, out tbl_User User, out string Message)
+        {
+            bool isSaved = false;
+            User = null;
+            Message = "";
+
+            if (base.Exists(r => r.ID != Model.ID && r.Name == Model.Name))
+            {
+                Message = "User name should be uniqe.";
+                return isSaved;
+            }
+
+            if (base.Exists(r => r.ID != Model.ID && r.Email == Model.Email))
+            {
+                Message = "Email should be uniqe.";
+                return isSaved;
+            }
+
+            //Normal User Type
+            Model.UserTypeID = (short)Enums.UserType.Normal;
+            Mapper.Instance.CreateMap<User, tbl_User>();
+            tbl_User table = Mapper.Instance.Map<User, tbl_User>(Model);
+
+            //Make Password Hashed
+            table.Password = StringCipher.Hash(Model.Password);
+
+            if (!string.IsNullOrEmpty(Model.DeviceToken))
+                table.tbl_UserDeviceToken.Add(new tbl_UserDeviceToken { tbl_User = table, DeviceToken = Model.DeviceToken });
+
+            repository.Insert(table);
+            User = table;
+            isSaved = true;
+            return isSaved;
+        }
+
+        #endregion
+    }
+}

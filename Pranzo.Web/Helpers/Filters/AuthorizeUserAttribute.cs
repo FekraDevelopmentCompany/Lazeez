@@ -1,0 +1,131 @@
+﻿using System.Linq;
+using System.Web.Mvc;
+using Lazeez.Helper;
+
+namespace Lazeez.Web.Helpers.Filters
+{
+    public class AuthorizeUserAttribute : AuthorizeAttribute
+    {
+        protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+        {
+            var httpContext = filterContext.HttpContext;
+
+            if (httpContext.Request.Url != null && httpContext.Request.ApplicationPath != null && GlobalSettings.CurrentUserID > 0)
+            {
+                var pageUrl = httpContext.Request.ApplicationPath == "/" ? httpContext.Request.Url.AbsolutePath.ToLower() : httpContext.Request.Url.AbsolutePath.Replace(httpContext.Request.ApplicationPath, string.Empty).ToLower();
+                var valid = AuthonticateUser(pageUrl);
+                if (!valid)
+                {
+                    filterContext.Result = new RedirectResult(filterContext.HttpContext.Request.IsAjaxRequest()
+                        ? "~/ControlPanel/NotAuthorized/AjaxNotAuthorized"
+                        : "~/ControlPanel/NotAuthorized");
+                }
+            }
+            else
+            {
+                filterContext.HttpContext.Response.Redirect("~/Login");
+                base.HandleUnauthorizedRequest(filterContext);
+            }
+        }
+
+        private bool AuthonticateUser(string pageUrl)
+        {
+            // Check User Authontication
+            var currentUserTypeId = GlobalSettings.CurrentUserTypeID;
+            switch (currentUserTypeId)
+            {
+                case Enums.UserType.LazeezAdmin:
+                    return true;
+                case Enums.UserType.RestaurantAdmin:
+                    return RestaurantAdmin.Any(a => a == pageUrl);
+                case Enums.UserType.Meter:
+                    return Meter.Any(a => a == pageUrl);
+                case Enums.UserType.Cashier:
+                    return Cashier.Any(a => a == pageUrl);
+                case Enums.UserType.Chef:
+                    return Chef.Any(a => a == pageUrl);
+                default:
+                    return false;
+            }
+        }
+
+        public readonly string[] RestaurantAdmin =
+        {
+            // Restaurant
+            "/controlpanel/restaurant",
+            "/controlpanel/restaurant/delete",
+            "/controlpanel/restaurant/addedit",
+
+            // Restaurant Branch
+            "/controlpanel/restaurantbranch",
+            "/controlpanel/restaurantbranch/delete",
+            "/controlpanel/restaurantbranch/addedit",
+
+            // Restaurant Food
+            "/controlpanel/restaurantfood",
+            "/controlpanel/restaurantfood/delete",
+            "/controlpanel/restaurantfood/addedit",
+
+            // Restaurant Meal
+            "/controlpanel/restaurantmeal",
+            "/controlpanel/restaurantmeal/delete",
+            "/controlpanel/restaurantmeal/addedit",
+
+            // Restaurant Menu
+            "/controlpanel/restaurantmenu",
+            "/controlpanel/restaurantmenu/delete",
+            "/controlpanel/restaurantmenu/addedit",
+
+            // Restaurant Promotion
+            "/controlpanel/restaurantpromotion",
+            "/controlpanel/restaurantpromotion/delete",
+            "/controlpanel/restaurantpromotion/addedit",
+
+            // Restaurant Table
+            "/controlpanel/restauranttable",
+            "/controlpanel/restauranttable/delete",
+            "/controlpanel/restauranttable/addedit",
+
+            // Restaurant Time
+            "/controlpanel/restauranttime",
+            "/controlpanel/restauranttime/delete",
+            "/controlpanel/restauranttime/addedit",
+
+            // Restaurant Order
+            "/controlpanel/restaurantorder",
+            "/controlpanel/restaurantorder/delete",
+            "/controlpanel/restaurantorder/addedit",
+            "/controlpanel/restaurantorder/updatestatus",
+
+            // User
+            "/controlpanel/user",
+            "/controlpanel/user/delete",
+            "/controlpanel/user/addedit"
+        };
+
+
+        public readonly string[] Meter =
+        { 
+            // Restaurant Order
+            "/controlpanel/restaurantorder",
+            "/controlpanel/restaurantorder/delete",
+            "/controlpanel/restaurantorder/addedit",
+            "/controlpanel/restaurantorder/updatestatus"
+        };
+
+        public readonly string[] Cashier =
+        { 
+            // Restaurant Order
+            "/controlpanel/restaurantorder",
+            "/controlpanel/restaurantorder/addedit",
+            "/controlpanel/restaurantorder/updatestatus"
+        };
+
+        public readonly string[] Chef =
+        { 
+            // Restaurant Order
+            "/controlpanel/restaurantorder",
+            "/controlpanel/restaurantorder/updatestatus"
+        };
+    }
+}

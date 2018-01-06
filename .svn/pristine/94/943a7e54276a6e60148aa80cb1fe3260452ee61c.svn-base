@@ -1,0 +1,194 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantService : BaseService<tbl_Restaurant, Restaurant>
+    {
+        public RestaurantService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_Restaurant>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Restaurant Branch
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            restaurantBranchService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Menu
+            var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+            restaurantMenuService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Time
+            var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+            restaurantTimeService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Meal
+            var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+            restaurantMealService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Promotion
+            var restaurantPromotionService = unitOfWork.Service<RestaurantPromotionService>();
+            restaurantPromotionService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Table
+            var restaurantTableService = unitOfWork.Service<RestaurantTableService>();
+            restaurantTableService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Order
+            var restaurantOrderService = unitOfWork.Service<RestaurantOrderService>();
+            restaurantOrderService.Delete(r => r.RestaurantID == id);
+
+            // Delete Source Image
+            var sourceImageService = unitOfWork.Service<SourceImageService>();
+            sourceImageService.Delete(s => s.SourceID == id && s.SourceTypeID == (short)Enums.SourceType.Restaurant);
+
+            // Delete Restaurant
+            base.Delete(id);
+        }
+
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantSearch> Search(RestaurantSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+            var ignoreMobile = string.IsNullOrEmpty(prms.Mobile);
+            var ignorePhone = string.IsNullOrEmpty(prms.Phone);
+            var ignoreCanReserveTables = string.IsNullOrEmpty(prms.CanReserveTables);
+            var ignoreAllowSmoking = string.IsNullOrEmpty(prms.AllowSmoking);
+            var ignoreType = prms.Type == null;
+
+            var restaurants = (from restaurant in repository.Table
+                               where restaurant.IsDeleted == false && restaurant.CreatorUserID == GlobalSettings.CurrentUserID
+                                    && (ignoreName || restaurant.Name.Contains(prms.Name))
+                                    && (ignoreMobile || restaurant.Name.Contains(prms.Mobile))
+                                    && (ignorePhone || restaurant.Name.Contains(prms.Phone))
+                                    && (ignoreCanReserveTables || restaurant.CanReserveTables == prms.CanReserveTables.Equals("1"))
+                                    && (ignoreAllowSmoking || restaurant.AllowSmoking == prms.AllowSmoking.Equals("1"))
+                                    && (ignoreType || restaurant.Type == prms.Type.Value)
+                               select new RestaurantSearch
+                               {
+                                   ID = restaurant.ID,
+                                   Name = restaurant.Name,
+                                   Type = ((Enums.RestaurantType)restaurant.Type).ToString(),
+                                   Mobile = restaurant.Mobile,
+                                   Phone = restaurant.Phone,
+                                   NumberOfStaff = restaurant.NumberOfStaff,
+                                   NumberOfTables = restaurant.NumberOfTables,
+                                   TimeToDelivery = restaurant.TimeToDelivery
+                               })
+                              .OrderBy(prms.OrderBy)
+                              .ToList();
+
+            return new JQueryDataTables<RestaurantSearch>
+            {
+                iTotalRecords = restaurants.Count,
+                iTotalDisplayRecords = restaurants.Count,
+                aaData = restaurants.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        public string GetName(int id)
+        {
+            return repository.Table
+                             .Where(c => c.ID == id)
+                             .Select(c => c.Name)
+                             .FirstOrDefault();
+        }
+
+        public int GetNumberOfRestaurant(int userId)
+        {
+            return repository.Table
+                             .Where(u => u.IsDeleted == false && u.CreatorUserID == userId)
+                             .Select(u => u.ID)
+                             .Count();
+        }
+
+        public List<RestaurantForAPI> GetResturantByCityID(int CityID, int Count)
+        {
+            var Branchrepository = unitOfWork.Repository<tbl_RestaurantBranch>();
+
+            List<RestaurantForAPI> LstResturant = (from branch in Branchrepository.Table
+                                                   join restaurant in repository.Table on branch.RestaurantID equals restaurant.ID
+                                                   where branch.lkp_District.lkp_City.ID == CityID
+                                                   where restaurant.IsDeleted == false
+                                                   select new RestaurantForAPI
+                                                   {
+                                                       ID = restaurant.ID,
+                                                       Name = restaurant.Name,
+                                                       Location = branch.lkp_District.Name + ", " + branch.lkp_District.lkp_City.Name,
+                                                       //TODO: Get Type Dynmaic and get Image from Attatchments
+                                                       Type = 1,
+                                                       ImagePath = ""
+                                                   }).OrderBy(Ex => Ex.Name).Take(Count).ToList();
+            return LstResturant;
+        }
+
+        public List<RestaurantForAPI> GetFilteredResturant(ResturantFilter Filter)
+        {
+            var Branchrepository = unitOfWork.Repository<tbl_RestaurantBranch>();
+            var LstResturant = (from branch in Branchrepository.Table
+                                join restaurant in repository.Table on branch.RestaurantID equals restaurant.ID
+                                where branch.lkp_District.lkp_City.ID == Filter.CityID
+                                where restaurant.IsDeleted == false
+                                select new RestaurantForAPI
+                                {
+                                    ID = restaurant.ID,
+                                    Name = restaurant.Name,
+                                    Location = branch.lkp_District.Name + ", " + branch.lkp_District.lkp_City.Name,
+                                    OrderCount = restaurant.tbl_RestaurantOrder.Count,
+
+                                    //TODO: Get Type Dynmaic and get Image from Attatchments
+                                    Type = 1,
+                                    ImagePath = "",
+                                    CreationDate = restaurant.CreationDate
+                                }).AsQueryable();
+
+            //** if Type not equal 1 or 0 system will retrive all entities
+            // Type = Resutrant
+            if (Filter.Type == 1)
+                LstResturant = LstResturant.Where(ex => ex.Type == 1).AsQueryable();
+
+            else if (Filter.Type == 2) //Coffe
+                LstResturant = LstResturant.Where(ex => ex.Type == 2).AsQueryable();
+
+            //Most Ordered
+            if (Filter.FilterType == 1)
+                LstResturant = LstResturant.OrderByDescending(Ex => Ex.OrderCount).AsQueryable();
+            else if (Filter.FilterType == 2) //Recently Added
+                LstResturant = LstResturant.OrderByDescending(Ex => Ex.CreationDate).AsQueryable();
+
+            List<RestaurantForAPI> result = LstResturant.Take(Filter.Count).ToList();
+            return result;
+        }
+
+        public bool IsValidNumberOfRestaurant(int userId, out int maxNumberOfRestaurant)
+        {
+            var userService = unitOfWork.Service<UserService>();
+
+            // Get number of restaurants allowed for this user "restaurant admin"
+            maxNumberOfRestaurant = userService.GetNumberOfRestaurant(userId);
+
+            // Get current number of restaurants related to this user "restaurant admin"
+            var currentNumberOfRestaurant = GetNumberOfRestaurant(userId);
+
+            return (currentNumberOfRestaurant < maxNumberOfRestaurant);
+        }
+
+        #endregion
+    }
+}

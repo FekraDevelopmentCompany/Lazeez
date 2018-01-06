@@ -1,0 +1,142 @@
+﻿@model Lazeez.Model.ViewModel.UserModel
+@using Lazeez.Helper
+@using Lazeez.Resource.ControlPanel
+@using Lazeez.Web.Helpers
+
+@using (Ajax.BeginForm("Save", "User", new { area = "ControlPanel" },
+       new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+       new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.UserVM.ID, new { htmlAttributes = new { @id = "userId" } })
+    @Html.HiddenFor(model => model.UserVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@UserResources.Users </h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@UserResources.Name<span class="required"> *</span></label>
+                    <div class="col-sm-10 col-md-10 col-lg-10 xs-10">
+                        @Html.EditorFor(model => model.UserVM.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = @UserResources.Name } })
+                        @Html.ValidationMessageFor(model => model.UserVM.Name)
+                    </div>
+                </div>
+
+                @if (Model.userType == Enums.UserType.RestaurantAdmin)
+                {
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">@UserResources.UserType</label>
+                        <div class="col-md-4">
+                            @*@Html.DropDownListFor(model =>model.uservm.userType, new Enums.RestaurantUserType(), null, new { @id = "ddl_FoodTypes", @class = "form-control" })*@
+                            @Html.EnumsDropDownListFor(model => model.UserVM.UserTypeID, new Enums.RestaurantUserType(), new { @id = "ddl_UserType", @class = "form-control" })
+                        </div>
+
+                        <label class="col-md-2 control-label">@UserResources.BranchName</label>
+                        <div class="col-md-4">
+                            @Html.DropDownListFor(model => model.UserVM.RestaurantBranchID, Model.ListBranches, null, new { @id = "ddl_BranchName", @class = "form-control" })
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group" id="userPassword">
+                    <label class="col-md-2 control-label">@UserResources.Password<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.UserVM.Password, new { htmlAttributes = new { @class = "form-control",@id= "user-password", @placeholder = @UserResources.Password } })
+                        @Html.ValidationMessageFor(model => model.UserVM.Password)
+                    </div>
+                    <label class="col-md-2 control-label">@UserResources.ConfirmPassword<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.UserVM.ConfirmPassword, new { htmlAttributes = new { @class = "form-control",@id = "confirm-password", @placeholder = @UserResources.ConfirmPassword } })
+                        @Html.ValidationMessageFor(model => model.UserVM.ConfirmPassword)
+                    </div>
+                </div>
+
+                <div class="form-group" id="changeUserPassword">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-10">
+                        <a href="#" class="btn-link" onclick=" ChangeUserPassword()"><p id="changepass">@UserResources.ChangePassword </p> </a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@UserResources.Phone</label>
+                    <div class="col-md-4">
+
+                        @Html.EditorFor(model => model.UserVM.Phone, new { htmlAttributes = new { @class = "form-control", @placeholder = @UserResources.Phone } })
+                        @*<span class="input-group-addon"><i class="glyphicon glyphicon-phone"></i></span>*@
+                    </div>
+
+                    <label class="col-md-2 control-label">@UserResources.Email</label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.UserVM.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = @UserResources.Email } })
+
+                        @Html.ValidationMessageFor(model => model.UserVM.Email)
+                    </div>
+                </div>
+
+                @if (Model.userType == Enums.UserType.LazeezAdmin)
+                {
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">@UserResources.NumberOfRestaurant</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.UserVM.NumberOfRestaurant, new { htmlAttributes = new { @class = "form-control", @placeholder = @UserResources.NumberOfRestaurant } })
+
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12">
+            @Html.Partial("Buttons/_Save")
+            @Html.Partial("Buttons/_CancelAddEdit")
+        </div>
+    </div>
+}
+
+@section Scripts{
+
+    @*<script src="~/Areas/ControlPanel/Scripts/User/Index.js"></script>*@
+    <script>
+        function ChangeUserPassword(e)
+        {
+            $("#changeUserPassword").hide();
+            $("#user-password").val("")
+            $("#confirm-password").val("")
+            $("#userPassword").show();
+            
+
+            @*if($("#changepass").text()=='@UserResources.ChangePassword.ToString()')
+            {
+                $("#changepass").text('@UserResources.preventChangePassword.ToString()');
+                $("#userPassword").show();
+            }
+            else
+            {
+                $("#changepass").text('@UserResources.ChangePassword.ToString()');
+                $("#userPassword").hide();
+            }*@
+        }
+        $(document).ready()
+        {
+            if(@Model.UserVM.ID == 0) // Add Mode
+            {
+                $("#changeUserPassword").hide();
+                $("#userPassword").show();
+
+            }
+            else // Edit Mode
+            {
+                $("#changeUserPassword").show();
+                $("#userPassword").hide();
+            }
+        }
+
+    </script>
+}

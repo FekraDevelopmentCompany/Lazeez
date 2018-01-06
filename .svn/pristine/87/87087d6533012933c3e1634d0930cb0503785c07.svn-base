@@ -1,0 +1,143 @@
+﻿using System;
+using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Model.DBModel;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantTimeController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/Restaurant Time
+        public ActionResult Index(int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantTimeSearchParams prms)
+        {
+            var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+            var restaurantTimes = restaurantTimeService.Search(prms);
+            return Json(restaurantTimes, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Dialogs/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+            restaurantTimeService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+
+            var model = new RestaurantTimeModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId)
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantTimeVM = new RestaurantTime { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+                model.RestaurantTimeVM = restaurantTimeService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantTimeModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+
+                if (model.RestaurantTimeVM.Day > 0) // Normal Day
+                {
+                    if (model.RestaurantTimeVM.ID > 0) // Edit
+                    {
+                        restaurantTimeService.Update(model.RestaurantTimeVM);
+                    }
+                    else // Add
+                    {
+                        restaurantTimeService.Insert(model.RestaurantTimeVM);
+                    }
+                }
+                else // All Days
+                {
+                    var allWeekDays = Enum.GetValues(typeof(Enums.WeekDays));
+                    foreach (var day in allWeekDays)
+                    {
+                        var lstRestaurantTime = restaurantTimeService.GetAll(rt => rt.RestaurantID == model.RestaurantTimeVM.RestaurantID && rt.Day == (int)day);
+                        if (lstRestaurantTime.Count > 0) // Edit
+                        {
+                            var restaurantTime = lstRestaurantTime[0];
+                            restaurantTime.OpenTime = model.RestaurantTimeVM.OpenTime;
+                            restaurantTime.CloseTime = model.RestaurantTimeVM.CloseTime;
+                            restaurantTimeService.Update(restaurantTime);
+                        }
+                        else // Add
+                        {
+                            model.RestaurantTimeVM.Day = (int)day;
+                            restaurantTimeService.Insert(model.RestaurantTimeVM);
+                        }
+                    }
+                }
+
+                unitOfWork.Save();
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantTimeVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantTimeModel model)
+        {
+            if (model.RestaurantTimeVM.Day == 0) // All Days
+                return Json(true, JsonRequestBehavior.AllowGet);
+
+            var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+            var exists = restaurantTimeService.Exists(rt => rt.ID != model.RestaurantTimeVM.ID
+                                                            &&
+                                                            rt.RestaurantID == model.RestaurantTimeVM.RestaurantID
+                                                            && rt.Day == model.RestaurantTimeVM.Day);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

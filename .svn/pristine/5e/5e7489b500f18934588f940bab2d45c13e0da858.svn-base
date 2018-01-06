@@ -1,0 +1,61 @@
+﻿using System;
+using System.Web;
+
+namespace Pranzo.Helper
+{
+    public sealed class GlobalSettings
+    {
+        public const string AppPrefix = "Pranzo.";
+
+        public static int CurrentUserID
+        {
+            get
+            {
+                return HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"] != null ? int.Parse(HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"].Value) : 1; // ( 1) For Test
+            }
+            set
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentUserID"];
+                if (cookie != null)
+                    cookie.Value = value.ToString();  // Update cookie value
+                else
+                {
+                    cookie = new HttpCookie(AppPrefix + "CurrentUserID")
+                    {
+                        Value = value.ToString(),
+                        Expires = DateTime.Now.AddDays(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+
+        public static Enums.Culture CurrentCulture
+        {
+            get
+            {
+                // Attempt to read the culture cookie from Request
+                return (HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"] != null) ? (Enums.Culture)Enum.Parse(typeof(Enums.Culture), HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"].Value) : Enums.Culture.En;
+            }
+            set
+            {
+                // Save culture in a cookie
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[AppPrefix + "CurrentCulture"];
+                if (cookie != null)
+                    cookie.Value = value.ToString();  // Update cookie value
+                else
+                {
+                    // Create new cookie
+                    cookie = new HttpCookie(AppPrefix + "CurrentCulture")
+                    {
+                        Value = value.ToString(),
+                        Expires = DateTime.Now.AddYears(1)
+                    };
+                }
+
+                HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+        }
+    }
+}

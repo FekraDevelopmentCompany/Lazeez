@@ -1,0 +1,169 @@
+﻿using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Service.Helpers;
+using Pranzo.Service.Service;
+using Pranzo.Web.Controllers;
+using Pranzo.Web.Helpers;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class RestaurantMealController : BaseController
+    {
+        #region Search
+
+        // GET: ControlPanel/RestaurantMeal
+        public ActionResult Index(int restaurantId)
+        {
+            // Get Restaurant Name 
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            ViewBag.RestaurantID = restaurantId;
+            ViewBag.RestaurantName = restaurantService.GetName(restaurantId);
+
+            // Get Meal Exception That Realted to This Resturant to view in Search criteria
+            var listService = unitOfWork.Service<ListService>();
+            var lstMealException = listService.Fill_MealException();
+            ViewBag.ListRestaurantMealExceptionNames = ListSettings.Load(lstMealException, Resources.Res_All);
+
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult Search(RestaurantMealSearchParams prms)
+        {
+            // Search in Restaurant Meals
+            var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+            var restaurantMeals = restaurantMealService.Search(prms);
+            return Json(restaurantMeals, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult Delete(string id)
+        {
+            return PartialView("Popup/_Confirm", new ConfirmDialog
+            {
+                Id = id,
+                Action = RouteData.Values["action"].ToString(),
+                Controller = RouteData.Values["controller"].ToString(),
+                Title = Resources.Res_Confirm,
+                Message = Messages.Msg_ConfirmDelete
+            });
+        }
+
+        [HttpGet]
+        public PartialViewResult AddNewMealException()
+        {
+
+            return PartialView("AddNewMealException", new MealException
+            {
+                ID = 0,
+                Name = string.Empty,
+                Description = string.Empty
+            });
+        }
+
+        [HttpPost]
+        public ActionResult AddNewMealException(MealException mealException)
+        {
+
+            var mealExceptionService = unitOfWork.Service<MealExceptionService>();
+            mealExceptionService.Insert(mealException);
+            unitOfWork.Save();
+            return JavaScript("RefreshDualListbox();");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(ConfirmDialog confirmDialog)
+        {
+            var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+            restaurantMealService.Delete(int.Parse(confirmDialog.Id));
+            unitOfWork.Save();
+            return JavaScript("refreshGrid();");
+        }
+
+        #endregion
+
+        #region AddEdit
+
+        public ActionResult AddEdit(int id, int restaurantId)
+        {
+            var restaurantService = unitOfWork.Service<RestaurantService>();
+            var listService = unitOfWork.Service<ListService>();
+
+            // Get All Meal Exception And Resturant Meal Exception And put Them In ViewBag
+            var RestaurantMealException = unitOfWork.Service<RestaurantMealExceptionService>();
+
+            var lstMealException = listService.Fill_MealException();
+
+
+            var model = new RestaurantMealModel
+            {
+                RestaurantName = restaurantService.GetName(restaurantId),
+                ListMealException = ListSettings.Load(RestaurantMealException.SelectMealException(id)),
+                ListNotMealException = ListSettings.Load(RestaurantMealException.SelectNotMealException(id))
+            };
+
+            if (id == -1) // Add
+            {
+                model.RestaurantMealVM = new RestaurantMeal { RestaurantID = restaurantId };
+            }
+            else // Edit
+            {
+                var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+                model.RestaurantMealVM = restaurantMealService.GetById(id);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Save(RestaurantMealModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+
+                if (model.RestaurantMealVM.ID > 0)    // Edit
+                {
+                    restaurantMealService.Update(model.RestaurantMealVM);
+                }
+                else // Add
+                {
+                    model.RestaurantMealVM.ID= restaurantMealService.Insert(model.RestaurantMealVM,true);
+                }
+
+                unitOfWork.Save();
+
+                // save Exception On The Meal 
+                string MealExceptionIds = Request.Form["dualListbox"];
+                if (!string.IsNullOrEmpty(MealExceptionIds))
+                {
+                    var restaurantMealExceptionService = unitOfWork.Service<RestaurantMealExceptionService>();
+                    restaurantMealExceptionService.Insert(model.RestaurantMealVM.ID, (MealExceptionIds.Split(',').Select(int.Parse).ToList()));
+                    unitOfWork.Save();
+                }
+
+                return Json(new JsonResponse { Status = JsonResponse.ResultStatus.Success, RedirectToUrl = Url.Action("Index", new { restaurantId = model.RestaurantMealVM.RestaurantID }), Message = Messages.Msg_SaveDone });
+            }
+
+            return RedirectToAction("AddEdit", model);
+        }
+
+        public JsonResult IsUnique(RestaurantMealModel model)
+        {
+            // Check if Meal Name  exist or not 
+            var restaurantMealService = unitOfWork.Service<RestaurantMealService>();
+            var exists = restaurantMealService.Exists(rm => rm.ID != model.RestaurantMealVM.ID
+                                                   && rm.RestaurantID == model.RestaurantMealVM.RestaurantID
+                                                   && rm.Name == model.RestaurantMealVM.Name);
+            return Json(!exists, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+    }
+}

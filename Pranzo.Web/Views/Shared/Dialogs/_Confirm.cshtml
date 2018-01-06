@@ -1,0 +1,33 @@
+﻿@model Lazeez.Helper.ConfirmDialog
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        @using (Ajax.BeginForm(Model.Action, Model.Controller, FormMethod.Post, new AjaxOptions { OnSuccess = "success", OnFailure = "failure" }))
+        {
+            @Html.HiddenFor(x => x.Id)
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@Model.Title</h4>
+            </div>
+            <div class="modal-body">
+                <div class='row-fluid'><div class='span12'>@Model.Message</div></div>
+            </div>
+            <div class="modal-footer">
+                @Html.Partial("Buttons/_Ok")
+                @Html.Partial("Buttons/_CancelPopup")
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function success(response) {
+        response; // To Excute javascript from controller
+        $('#modal').modal('hide');
+
+        revalidateForm();
+    }
+
+    function failure(response) {
+        openPopupDialog(response.responseText);
+    }
+</script>

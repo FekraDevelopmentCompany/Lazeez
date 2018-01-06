@@ -1,0 +1,49 @@
+﻿@model Lazeez.Model.ViewModel.RestaurantTableModel
+@using Lazeez.Resource.ControlPanel
+
+@using (Ajax.BeginForm("Save", "RestaurantTable", new { area = "ControlPanel" },
+                                                                    new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+                                                                    new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantTableVM.ID)
+    @Html.HiddenFor(model => model.RestaurantTableVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantTableVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantTable.RestaurantTables</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantTable.RestaurantName</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantTable.GuestCount<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantTableVM.GuestCount, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantTable.GuestCount } })
+                        @Html.ValidationMessageFor(model => model.RestaurantTableVM.GuestCount)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantTable.Description</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantTableVM.Description, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantTable.Description } })
+                        @Html.ValidationMessageFor(model => model.RestaurantTableVM.Description)
+                    </div>
+                </div>
+
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Save")
+                @Html.Partial("Buttons/_CancelAddEdit")
+            </div>
+        </div>
+    </div>
+}

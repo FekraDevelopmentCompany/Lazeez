@@ -1,0 +1,18 @@
+﻿@model DateTime?
+@{
+    var htmlAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(ViewData["htmlAttributes"]);
+
+    string name = string.Empty;
+    if (htmlAttributes["name"] != null)
+    {
+        name = htmlAttributes["name"].ToString();
+        ViewData.TemplateInfo.HtmlFieldPrefix = "";
+    }
+}
+
+<div class="input-group date" datepicker="@htmlAttributes["datepicker"]">
+    @Html.TextBox(@name, (Model.HasValue && Model.Value != default(DateTime) ? Model.Value : (DateTime?)null), htmlAttributes)
+    <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+    </span>
+</div>

@@ -1,0 +1,106 @@
+﻿@model Pranzo.Model.ViewModel.RestaurantMealModel
+@using Pranzo.Resource.ControlPanel
+@using Pranzo.Resource.Shared
+
+@using (Ajax.BeginForm("Save", "RestaurantMeal", new { area = "ControlPanel" },
+        new AjaxOptions { HttpMethod = "POST", OnSuccess = "OnSuccess", OnFailure = "OnFailure" },
+        new { defaultbutton = "btn_Save", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(model => model.RestaurantMealVM.ID)
+    @Html.HiddenFor(model => model.RestaurantMealVM.RestaurantID)
+    @Html.HiddenFor(model => model.RestaurantMealVM.IsDeleted)
+
+    <h2>@Model.Header</h2>
+    <h4>@RestaurantMeal.RestaurantMeals</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.RestaurantName</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantName, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.RestaurantMenu<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.RestaurantMealVM.RestaurantMenuID, Model.ListRestaurantMenu, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.RestaurantMenuID)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.Name<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantMealVM.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.Name } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.Name)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.Cost<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantMealVM.Cost, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.Cost } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.Cost)
+                    </div>
+                    <label class="col-md-2 control-label">@RestaurantMeal.Calories</label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantMealVM.Calories, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.Calories } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.NumberOfPersons<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantMealVM.NumberOfPersons, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.NumberOfPersons } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.NumberOfPersons)
+                    </div>
+                    <label class="col-md-2 control-label">@RestaurantMeal.Temperature<span class="required"> *</span></label>
+                    <div class="col-md-4">
+                        @Html.EditorFor(model => model.RestaurantMealVM.Temperature, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.Temperature } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.Temperature)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.TimeOfMeal<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantMealVM.TimeOfMeal, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.TimeOfMeal } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.TimeOfMeal)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantMeal.Contents<span class="required"> *</span></label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.RestaurantMealVM.Contents, new { htmlAttributes = new { @class = "form-control", @placeholder = @RestaurantMeal.Contents } })
+                        @Html.ValidationMessageFor(model => model.RestaurantMealVM.Contents)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <hr />
+    <h4>@RestaurantMeal.MealException</h4>
+    <div class="row">
+        <div class="col-lg-12">
+            <a role="button" id="btn_AddException" class="btn btn-default"><i class="fa fa-plus"></i> @Buttons.Btn_AddException </a>
+            <br /><br />
+            @Html.ListBoxFor(model => model.SelectedMealExceptionIds, Model.ListMealException, new { @id = "lstMealException", @class = "form-control", multiple = "multiple" })
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            @Html.Partial("Buttons/_Save")
+            @Html.Partial("Buttons/_CancelAddEdit")
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Areas/ControlPanel/Scripts/RestaurantMeal/AddEdit.js"></script>
+    <script>
+        var links = {
+            addMealException: '@Url.Action("AddMealException", "RestaurantMeal")'
+        };
+
+    </script>
+}

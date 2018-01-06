@@ -1,0 +1,1 @@
+﻿<button class="btn" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i>@Pranzo.Resource.Shared.Buttons.Btn_Cancel</button>

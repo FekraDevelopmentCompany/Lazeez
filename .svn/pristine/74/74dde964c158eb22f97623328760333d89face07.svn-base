@@ -1,0 +1,58 @@
+﻿@model Pranzo.Model.DBModel.MealException
+@using Pranzo.Resource.ControlPanel
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        @using (Ajax.BeginForm("AddNewMealException", "RestaurantMeal", FormMethod.Post, new AjaxOptions { OnSuccess = "success", OnFailure = "failure" }))
+        {
+            @Html.HiddenFor(model => model.ID)
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Meal Exception</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">@RestaurantMeal.Name<span class="required"> *</span></label>
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantMeal.Name } })
+                                    @Html.ValidationMessageFor(model => model.Name)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Description<span class="required"> *</span></label>
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @palceholder = @RestaurantMeal.Name } })
+                                    @Html.ValidationMessageFor(model => model.Description)
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+                <div class="modal-footer">
+                    @Html.Partial("Buttons/_Save")
+                    @Html.Partial("Buttons/_CancelPopup")
+                </div>
+        }
+    </div>
+</div>
+<script>
+    function success(response) {
+        response; // To Excute javascript from controller
+        $('#modal').modal('hide');
+
+        revalidateForm();
+    }
+
+    function failure(response) {
+        openPopupDialog(response.responseText);
+    }
+</script>

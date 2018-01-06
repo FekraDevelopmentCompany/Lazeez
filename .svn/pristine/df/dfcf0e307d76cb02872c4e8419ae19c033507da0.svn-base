@@ -1,0 +1,64 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Pranzo.Service.Service
+{
+    public class DistrictService : BaseService<lkp_District, District>
+    {
+        public DistrictService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<lkp_District>();
+        }
+
+        #region BaseService Operations
+
+
+        #endregion
+
+        #region Business Operations
+
+
+        /// <summary>
+        /// Search in Lkp_District By Name
+        /// </summary>
+        /// <param name="prms"></param>
+        /// <returns></returns>
+        public JQueryDataTables<MasterDataSearch> Search(MasterDataSearchParams prms)
+        {
+            // Parameters
+            bool ignoreName = string.IsNullOrEmpty(prms.Name);
+
+            // Get Repository of City
+            var cityRepository = unitOfWork.Repository<lkp_City>();
+
+            var Districts = (from district in repository.Table
+                             join city in cityRepository.Table on district.CityID equals city.ID
+                             where city.IsDeleted == false
+                                && (ignoreName || district.Name.Contains(prms.Name))
+                             select new MasterDataSearch
+                             {
+                                 ID = district.ID,
+                                 Name = district.Name,
+                                 Description = city.Name
+                             })
+                          .OrderBy(prms.OrderBy)
+                          .ToList();
+
+            return new JQueryDataTables<MasterDataSearch>
+            {
+                iTotalRecords = Districts.Count,
+                iTotalDisplayRecords = Districts.Count,
+                aaData = Districts.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,13 @@
+﻿using System.Web.Mvc;
+using Pranzo.Web.Helpers.Filters;
+
+namespace Pranzo.Web
+{
+    public class FilterConfig
+    {
+        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
+        {
+            filters.Add(new ErrorHandlerAttribute()); // Custom HandleErrorAttribute
+        }
+    }
+}

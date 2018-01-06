@@ -1,0 +1,29 @@
+﻿using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Pranzo.Service.Service
+{
+    public class UserInterestService : BaseService<tbl_UserInterest, UserInterest>
+    {
+        public UserInterestService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_UserInterest>();
+        }
+
+        #region BaseService Operations
+
+        #endregion
+
+        #region Business Operations
+
+
+        #endregion
+    }
+}

@@ -1,0 +1,11 @@
+﻿@model TimeSpan?
+@{
+    var htmlAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(ViewData["htmlAttributes"]);
+}
+
+<div class="input-group clockpicker">
+    @Html.TextBox("", (Model.HasValue && Model.Value != default(TimeSpan) ? Model.Value : (TimeSpan?)null), htmlAttributes)
+    <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+    </span>
+</div>

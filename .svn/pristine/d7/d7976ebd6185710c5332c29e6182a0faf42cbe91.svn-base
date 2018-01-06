@@ -1,0 +1,26 @@
+﻿using System.Web.Mvc;
+using Pranzo.Helper;
+using Pranzo.Resource.Shared;
+using Pranzo.Web.Controllers;
+
+namespace Pranzo.Web.Areas.ControlPanel.Controllers
+{
+    public class NotAuthorizedController : BaseController
+    {
+        // GET: ControlPanel/NotAuthorized
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public PartialViewResult AjaxNotAuthorized()
+        {
+            return PartialView("Dialogs/_Message", new MessageDialog
+            {
+                Title = Resources.Res_NotAuthorized,
+                Message = Messages.Msg_NotAuthorized,
+                Type = MessageDialog.ButtonType.Error
+            });
+        }
+    }
+}

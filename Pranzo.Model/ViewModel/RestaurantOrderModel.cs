@@ -1,0 +1,50 @@
+﻿using System;
+using Lazeez.Helper;
+using Lazeez.Model.DBModel;
+using Lazeez.Resource.Shared;
+using System.Collections.Generic;
+using System.Web.Mvc;
+
+namespace Lazeez.Model.ViewModel
+{
+    public class RestaurantOrderModel
+    {
+        // Headre Edit Or Add Case 
+        public string Header { get; set; }
+        public string RestaurantBranchName { get; set; }
+
+        private RestaurantOrder _restaurantOrderVm;
+        public RestaurantOrder RestaurantOrderVM
+        {
+            get { return _restaurantOrderVm; }
+            set
+            {
+                _restaurantOrderVm = value;
+                // Header = edit in case id > 0 and  Add in case id <0
+                Header = _restaurantOrderVm.ID > 0 ? Resources.Res_Edit : Resources.Res_Add;
+            }
+        }
+
+        public List<int> SelectedOrderMeals { get; set; }
+        public MultiSelectList ListOrderMeals { get; set; }
+    }
+
+    public class RestaurantOrderSearch
+    {
+        public int ID { get; set; }
+        public string BranchName { get; set; }
+        public decimal TotalCost { get; set; }
+        public decimal DeliveryCost { get; set; }
+        public decimal Tax { get; set; }
+        public DateTime OrderTime { get; set; }
+        public DateTime? DeliveryTime { get; set; }
+        public int Status { get; set; }
+        public string PaymentType { get; set; }
+    }
+
+    public class RestaurantOrderSearchParams : JQueryDataTablesModel
+    {
+        public int? RestaurantBranchID { get; set; }
+        public int? StatusID { get; set; }
+    }
+}

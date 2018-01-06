@@ -1,0 +1,90 @@
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
+using Lazeez.Helper;
+using Lazeez.Model.DBModel;
+using Lazeez.Resource.Shared;
+using System.ComponentModel.DataAnnotations;
+using System;
+
+namespace Lazeez.Model.ViewModel
+{
+    // Model In Case Add edit Form 
+    public class RestaurantMealModel
+    {
+        // Headre Edit Or Add Case 
+        public string Header { get; set; }
+        public string RestaurantName { get; set; }
+
+        private RestaurantMeal _restaurantMealVm;
+        public RestaurantMeal RestaurantMealVM
+        {
+            get { return _restaurantMealVm; }
+            set
+            {
+                _restaurantMealVm = value;
+                // Header = edit in case id > 0 and  Add in case id <0
+                Header = _restaurantMealVm.ID > 0 ? Resources.Res_Edit : Resources.Res_Add;
+            }
+        }
+
+        public SelectList ListRestaurantMenu { get; set; }
+        public List<int> SelectedMealExceptionIds { get; set; }
+        public MultiSelectList ListMealException { get; set; }
+    }
+
+    // Model to fill DataTable Grid View 
+    public class RestaurantMealSearch
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string RestaurantMenu { get; set; }
+        public int? Calories { get; set; }
+        public decimal Cost { get; set; }
+        public int NumberOfPerson { get; set; }
+        public string Temperature { get; set; }
+        public string TimeOfMeal { get; set; }
+    }
+
+    // Search Criteria in RestaurantMeal Form 
+    public class RestaurantMealSearchParams : JQueryDataTablesModel
+    {
+        public int RestaurantID { get; set; }
+        public string Name { get; set; }
+        public int? RestaurantMenuID { get; set; }
+        public int? RestaurantMealExceptionID { get; set; }
+    }
+
+    public class RestaurantMealForAPI
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string RestaurantMenu { get; set; }
+        public string Contents { get; set; }
+        public int? Calories { get; set; }
+        public decimal Cost { get; set; }
+        public decimal CostAfterPromotion { get; set; }
+        public int NumberOfPerson { get; set; }
+        public string Temperature { get; set; }
+        public string TimeOfMeal { get; set; }
+        public DateTime CreationDate { get; set; }
+        public string PromotionName { get; set; }
+        public decimal? PromotionPercentage { get; set; }
+        public List<string> ListOfImages { get; set; }
+        public int MealOrderCount { get; set; }
+    }
+
+    public class ResturantMealFilter
+    {
+        [Required]
+        public int Type { get; set; }
+
+        [Required]
+        public int FilterType { get; set; }
+
+        [Required]
+        public int Count { get; set; }
+
+        [Required]
+        public int PageNumber { get; set; }
+    }
+}

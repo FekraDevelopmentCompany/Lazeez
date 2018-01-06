@@ -1,0 +1,93 @@
+﻿using System.Linq;
+using Pranzo.Entities.Model;
+using Pranzo.Helper;
+using Pranzo.Repository.UnitOfWork;
+using Pranzo.Service.Infrastructure;
+using Pranzo.Model.DBModel;
+using Pranzo.Model.ViewModel;
+
+namespace Pranzo.Service.Service
+{
+    public class RestaurantService : BaseService<tbl_Restaurant, Restaurant>
+    {
+        public RestaurantService(UnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+            repository = unitOfWork.Repository<tbl_Restaurant>();
+        }
+
+        #region BaseService Operations
+
+        public override void Delete(int id)
+        {
+            // Delete Restaurant Branch
+            var restaurantBranchService = unitOfWork.Service<RestaurantBranchService>();
+            restaurantBranchService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Menu
+            var restaurantMenuService = unitOfWork.Service<RestaurantMenuService>();
+            restaurantMenuService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant Time
+            var restaurantTimeService = unitOfWork.Service<RestaurantTimeService>();
+            restaurantTimeService.Delete(r => r.RestaurantID == id);
+
+            // Delete Restaurant
+            base.Delete(id);
+        }
+
+        #endregion
+
+        #region Business Operations
+
+        public JQueryDataTables<RestaurantSearch> Search(RestaurantSearchParams prms)
+        {
+            // Parameters
+            var ignoreName = string.IsNullOrEmpty(prms.Name);
+            var ignoreMobile = string.IsNullOrEmpty(prms.Mobile);
+            var ignorePhone = string.IsNullOrEmpty(prms.Phone);
+            var ignoreCanReserveTables = string.IsNullOrEmpty(prms.CanReserveTables);
+            var ignoreAllowSmoking = string.IsNullOrEmpty(prms.AllowSmoking);
+            var ignoreType = prms.Type == null;
+
+            var restaurants = (from restaurant in repository.Table
+                               where restaurant.IsDeleted == false
+                                    && (ignoreName || restaurant.Name.Contains(prms.Name))
+                                    && (ignoreMobile || restaurant.Name.Contains(prms.Mobile))
+                                    && (ignorePhone || restaurant.Name.Contains(prms.Phone))
+                                    && (ignoreCanReserveTables || restaurant.CanReserveTables == prms.CanReserveTables.Equals("1"))
+                                    && (ignoreAllowSmoking || restaurant.AllowSmoking == prms.AllowSmoking.Equals("1"))
+                                    && (ignoreType || restaurant.Type == prms.Type.Value)
+                               select new RestaurantSearch
+                               {
+                                   ID = restaurant.ID,
+                                   Name = restaurant.Name,
+                                   Type = ((Enums.RestaurantType)restaurant.Type).ToString(),
+                                   Mobile = restaurant.Mobile,
+                                   Phone = restaurant.Phone,
+                                   NumberOfStaff = restaurant.NumberOfStaff,
+                                   NumberOfTables = restaurant.NumberOfTables,
+                                   TimeToDelivery = restaurant.TimeToDelivery
+                               })
+                              .OrderBy(prms.OrderBy)
+                              .ToList();
+
+            return new JQueryDataTables<RestaurantSearch>
+            {
+                iTotalRecords = restaurants.Count,
+                iTotalDisplayRecords = restaurants.Count,
+                aaData = restaurants.Skip(prms.iDisplayStart).Take(prms.iDisplayLength).ToList()
+            };
+        }
+
+        public string GetName(int id)
+        {
+            return repository.Table
+                             .Where(c => c.ID == id)
+                             .Select(c => c.Name)
+                             .FirstOrDefault();
+        }
+
+        #endregion
+    }
+}

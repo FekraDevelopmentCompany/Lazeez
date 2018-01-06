@@ -1,0 +1,66 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+
+namespace Lazeez.Web.Helpers
+{
+    public class ListSettings
+    {
+        const string Text = "Text";
+        const string Value = "Value";
+    
+        public static SelectList Load(List<KeyValuePair> dataSource)
+        {
+            return new SelectList(dataSource, Value, Text);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, bool sorted)
+        {
+            dataSource.OrderBy(d => d.Text);
+            return new SelectList(dataSource, Value, Text);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, string defaultValue)
+        {
+            dataSource.Insert(0, new KeyValuePair { Value = string.Empty, Text = defaultValue });
+            return new SelectList(dataSource, Value, Text);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, string defaultValue, bool sorted)
+        {
+            dataSource.OrderBy(d => d.Text);
+            dataSource.Insert(0, new KeyValuePair { Value = string.Empty, Text = defaultValue });
+            return new SelectList(dataSource, Value, Text);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, object selected)
+        {
+            return new SelectList(dataSource, Value, Text, selected);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, bool sorted, object selected)
+        {
+            dataSource.OrderBy(d => d.Text);
+            return new SelectList(dataSource, Value, Text, selected);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, string defaultValue, object selected)
+        {
+            dataSource.Insert(0, new KeyValuePair { Value = string.Empty, Text = defaultValue });
+            return new SelectList(dataSource, Value, Text, selected);
+        }
+
+        public static SelectList Load(List<KeyValuePair> dataSource, string defaultValue, bool sorted, object selected)
+        {
+            dataSource.OrderBy(d => d.Text);
+            dataSource.Insert(0, new KeyValuePair { Value = string.Empty, Text = defaultValue });
+            return new SelectList(dataSource, Value, Text, selected);
+        }
+
+        public static MultiSelectList Load(List<KeyValuePair> dataSource, IEnumerable selectedValues)
+        {
+            return new MultiSelectList(dataSource, Value, Text, selectedValues);
+        }
+    }
+}

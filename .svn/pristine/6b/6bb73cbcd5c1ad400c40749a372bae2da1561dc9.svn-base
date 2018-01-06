@@ -1,0 +1,12 @@
+﻿using Pranzo.Repository.Repository;
+using System;
+
+namespace Pranzo.Repository.UnitOfWork
+{
+    public interface IUnitOfWork : IDisposable
+    {
+        S Service<S>() where S : class;
+        //IRepository<T> Repository<T>() where T : class;
+        int Save();
+    }
+}

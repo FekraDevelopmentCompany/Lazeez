@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace Lazeez.Model.Infrastructure
+{
+    public abstract class BaseEntity : IBaseEntity
+    {
+        public int CreatorUserID { get; set; }
+        public int ModifiedUserID { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime ModificationDate { get; set; }
+        public bool IsDeleted { get; set; }
+    }
+}

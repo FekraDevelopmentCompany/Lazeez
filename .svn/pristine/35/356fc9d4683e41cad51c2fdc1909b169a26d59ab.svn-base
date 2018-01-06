@@ -1,0 +1,78 @@
+﻿/*body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}*/
+
+/* Set padding to keep content from hitting the edges */
+/*.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}*/
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+/*input,
+select,
+textarea {
+   max-width: 100%;
+}*/
+
+.required {
+    color: red;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #B94A48;
+    display: inline;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #B94A48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #B94A48;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.datatable-icons {
+    cursor: pointer;
+}
+
+thead th {
+    white-space: nowrap;
+}
+
+.krajee-init-preview {
+    height: 160px;
+    /*width: 120px;*/
+}
+
+/*.file-preview-image {
+    height: 160px;
+    width: 120px;
+}*/
+
+.kv-file-upload {
+    display: none;
+}

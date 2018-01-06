@@ -1,0 +1,11 @@
+﻿namespace Pranzo.Helper
+{
+    public class Enums
+    {
+        public enum Culture : short
+        {
+            En = 0,
+            Ar = 1
+        }
+    }
+}

@@ -1,0 +1,35 @@
+﻿using System;
+using Pranzo.Helper;
+using Pranzo.Model.DBModel;
+
+namespace Pranzo.Model.ViewModel
+{
+    public class RestaurantOrderModel
+    {
+        private RestaurantOrder _restaurantOrderVm;
+        public RestaurantOrder RestaurantOrderVM
+        {
+            get { return _restaurantOrderVm; }
+            set { _restaurantOrderVm = value; }
+        }
+    }
+
+    public class RestaurantOrderSearch
+    {
+        public int ID { get; set; }
+        public string BranchName { get; set; }
+        public decimal TotalCost { get; set; }
+        public decimal DeliveryCost { get; set; }
+        public decimal Tax { get; set; }
+        public DateTime OrderTime { get; set; }
+        public DateTime? DeliveryTime { get; set; }
+        public int Status { get; set; }
+        public string PaymentType { get; set; }
+    }
+
+    public class RestaurantOrderSearchParams : JQueryDataTablesModel
+    {
+        public int? RestaurantID { get; set; }
+        public int? StatusID { get; set; }
+    }
+}

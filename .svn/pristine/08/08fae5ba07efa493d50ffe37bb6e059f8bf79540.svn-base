@@ -1,0 +1,56 @@
+﻿using System.ComponentModel.DataAnnotations;
+using Pranzo.Model.DBModel;
+using Pranzo.Resource.Shared;
+using Pranzo.Helper;
+using System.Web.Mvc;
+
+namespace Pranzo.Model.ViewModel
+{
+    public class UserModel
+    {
+        public string Header { get; set; }
+
+        private User _userVm;
+
+        public Enums.UserType userType { get; set; }
+
+        public User UserVM
+        {
+            get { return _userVm; }
+            set
+            {
+                _userVm = value;
+                Header = _userVm.ID > 0 ? Resources.Res_Edit : Resources.Res_Add;
+            }
+        }
+        public SelectList ListBranches { get; set; }
+        public SelectList ListUserType { get; set; }
+    }
+
+    public class UserSearch
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string UserType { get; set; }
+        public int? NumberOfRestaurant { get; set; }
+        public string BranchName { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class UserSearchParams : JQueryDataTablesModel
+    {
+        public string Name { get; set; }
+        public int? UserType { get; set; }
+        public string Phone { get; set; }
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessageResourceType = typeof(Validation), ErrorMessageResourceName = "Val_RequiredField")]
+        public string Password { get; set; }
+    }
+}

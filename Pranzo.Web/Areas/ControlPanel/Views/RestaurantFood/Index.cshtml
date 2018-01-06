@@ -1,0 +1,68 @@
+﻿@using Lazeez.Resource.ControlPanel
+@using Lazeez.Resource.Shared
+
+@{
+    ViewBag.Title = "Restaurant Food";
+}
+
+<form class="form-horizontal">
+    <h2>@Resources.Res_Search</h2>
+    <h4>@RestaurantFood.RestaurantFoods</h4>
+    <hr />
+    <div class="row">
+        <div class="col-lg-12">
+            <div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantFood.RestaurantName</label>
+                    <div class="col-md-10">
+                        <input id="txt_RestaurantId" type="hidden" value="@ViewBag.RestaurantID">
+                        <input id="txt_RestaurantName" type="text" class="form-control" disabled="disabled" value="@ViewBag.RestaurantName" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">@RestaurantFood.FoodType</label>
+                    <div class="col-md-10">
+                        @Html.DropDownList("ListFoodTypes", null, new { @id = "ddl_FoodTypes", @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div>
+                @Html.Partial("Buttons/_Search")
+                @Html.Partial("Buttons/_Cancel")
+                @Html.Partial("Buttons/_Add")
+            </div>
+        </div>
+    </div>
+</form>
+<div class="row">
+    <div class="col-lg-12">
+        <table id="grid" class="table table-striped table-hover table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>@RestaurantFood.ID</th>
+                    <th>@RestaurantFood.FoodType</th>
+                    <th width="16px"></th>
+                    <th width="16px"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="~/Areas/ControlPanel/Scripts/RestaurantFood/Index.js"></script>
+    <script>
+        var links = {
+            addEdit: '@Url.Action("AddEdit", "RestaurantFood")',
+            delete: '@Url.Action("Delete", "RestaurantFood")',
+            search: '@Url.Action("Search", "RestaurantFood")'
+        };
+        var tooltip = {
+            edit: '@Resources.Res_Edit',
+            delete: '@Resources.Res_Delete'
+        }
+
+    </script>
+}

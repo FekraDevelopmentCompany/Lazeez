@@ -1,0 +1,94 @@
+﻿@using Pranzo.Resource.ControlPanel
+@model Pranzo.Model.ViewModel.LoginModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PRANZO | Login</title>
+    <!-- Bootstrap -->
+    <link href="~/Content/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="~/Content/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom Theme Style -->
+    <link href="~/Content/custom/custom.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryval")
+</head>
+<body class="login">
+    <div class="login-box">
+        <img class="login-logo" src="~/Content/images/logo-icons/logo.png" alt="" />
+        <br>
+        <img class="" src="~/Content/images/logo-icons/pranzo.png" alt="" />
+        <h2>Taste something different</h2>
+        <div class="login_wrapper">
+            <div class="form login_form">
+                <section class="login_content">
+                    @using (Ajax.BeginForm("ValidateUser", "Login",
+                            new AjaxOptions { HttpMethod = "POST", OnBegin = "OnBegin", OnSuccess = "OnSuccess" },
+                            new { defaultbutton = "btn_Login", @class = "form-horizontal" }))
+                    {
+                        <div>
+                            <span id="errorMsg" style="color: red; display: none; font-weight: bold">@Login.Msg_Validation</span>
+                        </div>
+                        <div>
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = @Login.Username } })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                        <div>
+                            @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = @Login.Password })
+                            @Html.ValidationMessageFor(model => model.Password)
+                        </div>
+                        <div>
+                            <a id="btn_Login" class="btn btn-default submit login-btn"><i id="loading"></i> @Login.Btn_Login</a>
+                        </div>
+                    }
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    // login button
+    $(document).on("click", "#btn_Login", function () {
+        $("Form").submit();
+    });
+
+    // handle enter key
+    $(document).keypress(function (e) {
+        if (e.which === 13) {
+            $("Form").submit();
+        }
+    });
+
+    function OnBegin() {
+        $("#btn_Login").addClass('disabled');
+        $("#loading").addClass('fa fa-refresh fa-spin');
+    }
+
+    function OnSuccess(response) {
+        if (response.Status === 1)
+            window.location.href = response.RedirectToUrl;
+        else {
+            $("#Password").val("");
+            $("#btn_Login").removeClass('disabled');
+            $("#loading").removeClass('fa fa-refresh fa-spin');
+            $("#errorMsg").show();
+        }
+    }
+
+</script>
